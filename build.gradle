@@ -1,0 +1,31 @@
+// Apply the groovy plugin to add support for Groovy
+apply plugin: 'groovy'
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use 'jcenter' for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+model {
+    components {
+        main(JvmLibrarySpec)
+    }
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    // We use the latest groovy 2.x version for building this library
+    compile 'org.codehaus.groovy:groovy-all:2.3.7'
+    compile 'org.bitcoinj:bitcoinj-core:0.14.4'
+    compile 'org.slf4j:slf4j-api:1.7.+'
+    compile 'ch.qos.logback:logback-classic:1.+'
+    compile 'com.madgag.spongycastle:core:1.54.0.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+
+
+    // We use the awesome Spock testing and specification framework
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile 'junit:junit:4.11'
+}
