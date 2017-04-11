@@ -7,8 +7,13 @@ FX Thoorens fx@ark.io
 
 
 # Example
+## Using Java
+See an example gradle app https://github.com/arkecosystem/ark-java-example
 
-using groovy, see example/Example.groovy:
+## Using Groovy
+Install groovy http://groovy-lang.org/install.html
+
+See example/Example.groovy:
 ```
 @GrabResolver(name='ark-java', root='https://dl.bintray.com/arkecosystem/ark-java/')
 @Grapes([
