@@ -1,5 +1,6 @@
 // Apply the groovy plugin to add support for Groovy
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -11,6 +12,24 @@ repositories {
 model {
     components {
         main(JvmLibrarySpec)
+    }
+}
+
+task writePom {
+    doLast {
+        pom {
+            project {
+                version '0.1'
+                groupId 'io.ark.lite'
+                artifactId 'client'
+                licenses {
+                    license {
+                        name 'MIT'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo("$buildDir/libs/client-0.1.xml")
     }
 }
 
