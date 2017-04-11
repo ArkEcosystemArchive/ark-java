@@ -1,6 +1,5 @@
-package io.ark
+package io.ark.core
 
-import groovy.transform.CompileStatic
 import java.nio.*
 import org.bitcoinj.core.*
 import org.bitcoinj.crypto.*
@@ -44,63 +43,7 @@ class Crypto {
   }
 
   static byte[] getBytes(Transaction t, boolean skipSignature = true, boolean skipSecondSignature = true){
-    ByteBuffer buffer = ByteBuffer.allocate(1000)
-    buffer.order(ByteOrder.LITTLE_ENDIAN)
-
-    buffer.put t.type
-    buffer.putInt t.timestamp
-    buffer.put BaseEncoding.base16().lowerCase().decode(t.senderPublicKey)
-
-    if(t.requesterPublicKey){
-      buffer.put Base58.decodeChecked(t.requesterPublicKey)
-    }
-
-    if(t.recipientId){
-      buffer.put Base58.decodeChecked(t.recipientId)
-    }
-    else {
-      buffer.put new byte[21]
-    }
-
-    if(t.vendorField){
-      byte[] vbytes = t.vendorField.bytes
-      if(vbytes.size()<65){
-        buffer.put vbytes
-        buffer.put new byte[64-vbytes.size()]
-      }
-    }
-    else {
-      buffer.put new byte[64]
-    }
-
-    buffer.putLong t.amount
-    buffer.putLong t.fee
-
-    if(t.type==1){
-      buffer.put BaseEncoding.base16().lowerCase().decode(t.asset.signature)
-    }
-    else if(t.type==2){
-      buffer.put t.asset.username.bytes
-    }
-    else if(t.type==3){
-      buffer.put t.asset.votes.join("").bytes
-    }
-    // TODO: multisignature
-    // else if(t.type==4){
-    //   buffer.put BaseEncoding.base16().lowerCase().decode(t.asset.signature)
-    // }
-
-    if(!skipSignature && t.signature){
-      buffer.put BaseEncoding.base16().lowerCase().decode(t.signature)
-    }
-    if(!skipSecondSignature && t.signSignature){
-      buffer.put BaseEncoding.base16().lowerCase().decode(t.signSignature)
-    }
-
-    def outBuffer = new byte[buffer.position()]
-    buffer.rewind()
-    buffer.get(outBuffer)
-    return outBuffer
+    return t.toBytes(skipSignature, skipSecondSignature)
   }
 
   static String getId(Transaction t){

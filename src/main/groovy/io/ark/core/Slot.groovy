@@ -1,4 +1,4 @@
-package io.ark
+package io.ark.core
 
 
 import com.google.common.io.BaseEncoding

@@ -1,8 +1,10 @@
-package io.ark
+package io.ark.core
 
-
+import java.nio.*
 import com.google.common.io.BaseEncoding
 import com.google.gson.Gson
+import org.bitcoinj.core.*
+import org.bitcoinj.crypto.*
 import groovy.transform.*
 
 @Canonical
@@ -15,11 +17,74 @@ class Transaction extends Object {
   String vendorField
   String signature
   String signSignature
-  String publicKey
   String senderPublicKey
   String requesterPublicKey
   Map<String, Object> asset = [:]
   String id
+
+  public byte[] toBytes(boolean skipSignature = true, boolean skipSecondSignature = true){
+    ByteBuffer buffer = ByteBuffer.allocate(1000)
+    buffer.order(ByteOrder.LITTLE_ENDIAN)
+
+    buffer.put type
+    buffer.putInt timestamp
+    buffer.put BaseEncoding.base16().lowerCase().decode(senderPublicKey)
+
+    if(requesterPublicKey){
+      buffer.put Base58.decodeChecked(requesterPublicKey)
+    }
+
+    if(recipientId){
+      buffer.put Base58.decodeChecked(recipientId)
+    }
+    else {
+      buffer.put new byte[21]
+    }
+
+    if(vendorField){
+      byte[] vbytes = vendorField.bytes
+      if(vbytes.size()<65){
+        buffer.put vbytes
+        buffer.put new byte[64-vbytes.size()]
+      }
+    }
+    else {
+      buffer.put new byte[64]
+    }
+
+    buffer.putLong amount
+    buffer.putLong fee
+
+    if(type==1){
+      buffer.put BaseEncoding.base16().lowerCase().decode(asset.signature)
+    }
+    else if(type==2){
+      buffer.put asset.username.bytes
+    }
+    else if(type==3){
+      buffer.put asset.votes.join("").bytes
+    }
+    // TODO: multisignature
+    // else if(type==4){
+    //   buffer.put BaseEncoding.base16().lowerCase().decode(asset.signature)
+    // }
+
+    if(!skipSignature && signature){
+      buffer.put BaseEncoding.base16().lowerCase().decode(signature)
+    }
+    if(!skipSecondSignature && signSignature){
+      buffer.put BaseEncoding.base16().lowerCase().decode(signSignature)
+    }
+
+    def outBuffer = new byte[buffer.position()]
+    buffer.rewind()
+    buffer.get(outBuffer)
+    return outBuffer
+  }
+
+  public Map toObject(){
+    this.properties.subMap(['id', 'timestamp', 'recipientId', 'amount', 'fee', 'type', 'vendorField', 'signature', 'signSignature', 'senderPublicKey', 'requesterPublicKey', 'asset'])
+  }
 
   String sign(passphrase){
     senderPublicKey = BaseEncoding.base16().lowerCase().encode(Crypto.getKeys(passphrase).getPubKey())

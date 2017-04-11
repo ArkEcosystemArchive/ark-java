@@ -19,7 +19,7 @@ task writePom {
     doLast {
         pom {
             project {
-                version '0.1'
+                version '0.2'
                 groupId 'io.ark.lite'
                 artifactId 'client'
                 licenses {
@@ -29,7 +29,7 @@ task writePom {
                     }
                 }
             }
-        }.writeTo("$buildDir/libs/client-0.1.pom")
+        }.writeTo("$buildDir/libs/client-0.2.pom")
     }
 }
 
@@ -41,6 +41,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.+'
     compile 'ch.qos.logback:logback-classic:1.+'
     compile 'com.madgag.spongycastle:core:1.54.0.0'
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
     compile 'com.google.code.gson:gson:2.8.0'
 
 
