@@ -17,11 +17,6 @@ See example/Example.groovy:
 ```
 @GrabResolver(name='ark-java', root='https://dl.bintray.com/arkecosystem/ark-java/')
 @Grapes([
-  @Grab('org.bitcoinj:bitcoinj-core:0.14.4'),
-  @Grab('com.madgag.spongycastle:core:1.54.0.0'),
-  @Grab('com.google.code.gson:gson:2.8.0'),
-  @Grab('org.slf4j:slf4j-api:1.7.+'),
-  @Grab('ch.qos.logback:logback-classic:1.+'),
   @Grab('org.codehaus.groovy.modules.http-builder:http-builder:0.7'),
   @Grab('io.ark.lite:client:0.1')
 ])

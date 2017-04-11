@@ -29,7 +29,7 @@ task writePom {
                     }
                 }
             }
-        }.writeTo("$buildDir/libs/client-0.1.xml")
+        }.writeTo("$buildDir/libs/client-0.1.pom")
     }
 }
 
