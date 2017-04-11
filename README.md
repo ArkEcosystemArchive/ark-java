@@ -8,6 +8,25 @@ FX Thoorens fx@ark.io
 
 # Example
 ## Using Java
+- use maven repository `https://dl.bintray.com/arkecosystem/ark-java/`
+- use package group:io.ark.lite, artifactId:client, version:0.1
+- add `inmport io.ark.*`
+
+### maven pom
+Add this under config `<dependencies>`
+```
+<dependency>
+  <groupId>io.ark.lite</groupId>
+  <artifactId>client</artifactId>
+  <version>0.1</version>
+  <scope>compile</scope>
+</dependency>
+```
+
+### gradle dependencies
+add this line under `dependencies`
+`compile io.ark.lite:client:0.1`
+
 See an example gradle app https://github.com/arkecosystem/ark-java-example
 
 ## Using Groovy
