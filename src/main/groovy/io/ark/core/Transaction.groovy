@@ -31,11 +31,11 @@ class Transaction extends Object {
     buffer.put BaseEncoding.base16().lowerCase().decode(senderPublicKey)
 
     if(requesterPublicKey){
-      buffer.put Base58.decodeChecked(requesterPublicKey)
+      buffer.put BaseEncoding.base16().lowerCase().decode(requesterPublicKey)
     }
 
     if(recipientId){
-      buffer.put Base58.decodeChecked(recipientId)
+      buffer.put BaseEncoding.base16().lowerCase().decode(recipientId)
     }
     else {
       buffer.put new byte[21]
