@@ -35,7 +35,7 @@ class Transaction extends Object {
     }
 
     if(recipientId){
-      buffer.put BaseEncoding.base16().lowerCase().decode(recipientId)
+      buffer.put Base58.decodeChecked(recipientId)
     }
     else {
       buffer.put new byte[21]
