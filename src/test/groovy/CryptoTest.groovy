@@ -16,7 +16,7 @@ class CryptoTest extends Specification {
 
     }
 
-    def "Passphrase 'this is a top secret passphrase' should generate address 'AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC' on Devnet"(){
+    def "Passphrase 'this is a top secret passphrase' should generate address 'D61mfSggzbvQgTUe6JhYKH2doHaqJ3Dyib' on Devnet"(){
       when:
         Crypto.networkVersion = Network.Devnet.prefix
         def address = Crypto.getAddress(Crypto.getKeys("this is a top secret passphrase"))
