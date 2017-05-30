@@ -14,14 +14,14 @@ class Peer extends Object {
   String status = "NEW"
 
   private AsyncHTTPBuilder http
-  private Map networkHearders = Network.Mainnet.headers
+  private Map networkHeaders
 
-  public static Peer create(String string){
+  public static Peer create(String string, networkHeaders = Network.Mainnet.headers){
     def data = string.split(":")
     def port = data[1] as int
     def protocol = "http://"
     if(port%1000 == 443) protocol = "https://"
-    new Peer(ip:data[0], port:port, protocol:protocol)
+    new Peer(ip: data[0], port: port, protocol: protocol, networkHeaders:networkHeaders)
   }
 
   // return Future that will deliver the JSON as a Map
@@ -45,7 +45,7 @@ class Peer extends Object {
 
     http.request(_method, JSON) {
       uri.path = path
-      headers << networkHearders
+      headers << networkHeaders
       body = body
 
       response.success = { resp, json ->
@@ -64,7 +64,7 @@ class Peer extends Object {
       http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
     Future future = http.request(POST, JSON) {
       uri.path = "/peer/transactions"
-      headers << networkHearders
+      headers << networkHeaders
       body = [transactions:[transaction.toObject()]]
 
       response.success = { resp, json ->

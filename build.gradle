@@ -15,6 +15,15 @@ model {
     }
 }
 
+sourceSets {
+    example {
+      groovy {
+        srcDir 'example'
+      }
+    }
+}
+
+
 task writePom {
     doLast {
         pom {
@@ -32,6 +41,8 @@ task writePom {
         }.writeTo("$buildDir/libs/client-0.2.pom")
     }
 }
+
+
 
 // In this section you declare the dependencies for your production and test code
 dependencies {

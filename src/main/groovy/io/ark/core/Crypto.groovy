@@ -9,6 +9,8 @@ import org.spongycastle.crypto.digests.RIPEMD160Digest
 
 class Crypto {
 
+  static networkVersion = 0x17
+
   static ECKey.ECDSASignature sign(Transaction t, String passphrase){
     byte[] txbytes = getBytes(t)
     signBytes(txbytes, passphrase)
@@ -56,16 +58,16 @@ class Crypto {
     return keys
   }
 
-  static String getAddress(ECKey keys, version = 0x17){
-    getAddress(keys.getPubKey(), version)
+  static String getAddress(ECKey keys){
+    getAddress(keys.getPubKey())
   }
 
-  static String getAddress(publicKey, version = 0x17){
+  static String getAddress(publicKey){
     RIPEMD160Digest digest = new RIPEMD160Digest();
     digest.update(publicKey, 0, publicKey.length);
     byte[] out = new byte[20];
     digest.doFinal(out, 0);
-    def address = new VersionedChecksummedBytes(version, out)
+    def address = new VersionedChecksummedBytes(networkVersion, out)
     return address.toBase58();
   }
 

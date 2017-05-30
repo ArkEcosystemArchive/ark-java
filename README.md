@@ -40,12 +40,12 @@ See example/Example.groovy:
 
 import io.ark.core.*
 
-// create a transaction
-def transaction = Transaction.createTransaction("AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25", 133380000000, "This is first transaction from JAVA", "this is a top secret passphrase")
-
 // grab mainnet network settings and warm it up
 def mainnet = Network.Mainnet
 mainnet.warmup()
+
+// create a transaction
+def transaction = Transaction.createTransaction("AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25", 133380000000, "This is first transaction from JAVA", "this is a top secret passphrase")
 
 // Post transaction to a peer
 def peer = mainnet.randomPeer

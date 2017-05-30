@@ -8,12 +8,20 @@ import com.google.common.io.BaseEncoding
 
 class CryptoTest extends Specification {
 
-    def "Passphrase 'this is a top secret second passphrase' should generate address 'AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC'"(){
+    def "Passphrase 'this is a top secret passphrase' should generate address 'AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC' on Mainnet"(){
       when:
         def address = Crypto.getAddress(Crypto.getKeys("this is a top secret passphrase"))
       then:
         address == 'AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC'
 
+    }
+
+    def "Passphrase 'this is a top secret passphrase' should generate address 'AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC' on Devnet"(){
+      when:
+        Crypto.networkVersion = Network.Devnet.prefix
+        def address = Crypto.getAddress(Crypto.getKeys("this is a top secret passphrase"))
+      then:
+        address == 'D61mfSggzbvQgTUe6JhYKH2doHaqJ3Dyib'
     }
 
     def "Transaction should create and verify"() {

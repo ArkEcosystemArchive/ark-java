@@ -18,6 +18,16 @@ class NetworkTest extends Specification {
         status.currentSlot > status.height
     }
 
+    def "Should connect to Devnet"(){
+      setup:
+        Network.Devnet.warmup()
+        def peer = Network.Devnet.randomPeer
+      when:
+        def status = peer.getStatus()
+      then:
+        status.currentSlot > status.height
+    }
+
     def "Should post a transaction to a Mainnet Peer"(){
       setup:
         Network.Mainnet.warmup()
