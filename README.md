@@ -18,7 +18,7 @@ Add this under config `<dependencies>`
 <dependency>
   <groupId>io.ark.lite</groupId>
   <artifactId>client</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
   <scope>compile</scope>
 </dependency>
 ```
