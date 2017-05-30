@@ -28,7 +28,7 @@ task writePom {
     doLast {
         pom {
             project {
-                version '0.2'
+                version '0.3'
                 groupId 'io.ark.lite'
                 artifactId 'client'
                 licenses {
@@ -38,7 +38,7 @@ task writePom {
                     }
                 }
             }
-        }.writeTo("$buildDir/libs/client-0.2.pom")
+        }.writeTo("$buildDir/libs/client-0.3.pom")
     }
 }
 

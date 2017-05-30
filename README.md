@@ -25,17 +25,17 @@ Add this under config `<dependencies>`
 
 ### gradle dependencies
 add this line under `dependencies`
-`compile io.ark.lite:client:0.2`
+`compile io.ark.lite:client:0.3`
 
 See an example gradle app https://github.com/arkecosystem/ark-java-example
 
 ## Using Groovy
 Install groovy http://groovy-lang.org/install.html
 
-See example/Example.groovy:
+Example:
 ```
 @GrabResolver(name='ark-java', root='https://dl.bintray.com/arkecosystem/ark-java/')
-@Grab('io.ark.lite:client:0.2')
+@Grab('io.ark.lite:client:0.3')
 
 import io.ark.core.*
 
@@ -54,7 +54,7 @@ println peer << transaction
 println mainnet << transaction
 ```
 
-then run:
+Try from source:
 `groovy example/Example.groovy`
 
 # License
