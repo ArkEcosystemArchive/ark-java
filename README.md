@@ -10,8 +10,7 @@ FX Thoorens fx@ark.io
 # Example
 ## Using Java
 - use maven repository `https://dl.bintray.com/arkecosystem/ark-java/`
-- use package group:io.ark.lite, artifactId:client, version:0.1
-- add `inmport io.ark.*`
+- add `import io.ark.*`
 
 ### maven pom
 Add this under config `<dependencies>`

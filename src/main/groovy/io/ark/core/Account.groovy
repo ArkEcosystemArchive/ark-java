@@ -21,7 +21,7 @@ class Account extends Object {
 
   public Verification verifyTransaction(transaction){
     Verification v = new Verification()
-    if(balance >= transaction.amount + transaction.fee)
+    if(balance < transaction.amount + transaction.fee)
       v.error.push "Account ${address} does not have enough balance: ${balance}"
     // TODO: many things
 
