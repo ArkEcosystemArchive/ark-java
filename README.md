@@ -25,7 +25,7 @@ Add this under config `<dependencies>`
 
 ### gradle dependencies
 add this line under `dependencies`
-`compile io.ark.lite:client:0.3`
+`compile 'io.ark.lite:client:0.3'`
 
 See an example gradle app https://github.com/arkecosystem/ark-java-example
 
