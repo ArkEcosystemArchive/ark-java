@@ -13,7 +13,7 @@ FX Thoorens fx@ark.io
 - Add it to your project and `import io.ark.*`
 
 ### Maven
-Add this under config `<dependencies>`
+Add this under `<dependencies>`
 ```
 <dependency>
   <groupId>io.ark.lite</groupId>
@@ -25,12 +25,14 @@ Add this under config `<dependencies>`
 
 ### Gradle
 Add this line under `dependencies`
-`compile 'io.ark.lite:client:0.3'`
+```
+compile 'io.ark.lite:client:0.3'
+```
 
-See an example gradle app https://github.com/arkecosystem/ark-java-example
+See an example gradle app here: https://github.com/arkecosystem/ark-java-example
 
 ## Using Groovy
-Install groovy http://groovy-lang.org/install.html
+Install groovy: http://groovy-lang.org/install.html
 
 Example:
 ```
@@ -54,7 +56,7 @@ println peer << transaction
 println mainnet << transaction
 ```
 
-Try from source:
+Run the example Groovy code by doing:
 `groovy example/Example.groovy`
 
 # License
