@@ -7,12 +7,12 @@
 FX Thoorens fx@ark.io
 
 
-# Example
+# Installation
 ## Using Java
-- use maven repository `https://dl.bintray.com/arkecosystem/ark-java/`
-- add `import io.ark.*`
+- Download the ```.jar``` from the Maven repository `https://dl.bintray.com/arkecosystem/ark-java/`
+- Add it to your project and `import io.ark.*`
 
-### maven pom
+### Maven
 Add this under config `<dependencies>`
 ```
 <dependency>
@@ -23,8 +23,8 @@ Add this under config `<dependencies>`
 </dependency>
 ```
 
-### gradle dependencies
-add this line under `dependencies`
+### Gradle
+Add this line under `dependencies`
 `compile 'io.ark.lite:client:0.3'`
 
 See an example gradle app https://github.com/arkecosystem/ark-java-example
