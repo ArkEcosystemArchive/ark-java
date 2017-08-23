@@ -34,7 +34,7 @@ class Crypto {
   }
 
   static boolean secondVerify(Transaction t, String secondPublicKeyHex){
-    ECKey keys = ECKey.fromPublicOnly BaseEncoding.base16().lowerCase().decode(secondPublicKeyHex)
+    ECKey keys = ECKey.fromPublicOnly(BaseEncoding.base16().lowerCase().decode(secondPublicKeyHex))
     byte[] signature = BaseEncoding.base16().lowerCase().decode(t.signSignature)
     byte[] bytes = getBytes(t, false)
     verifyBytes(bytes, signature, keys.getPubKey())
