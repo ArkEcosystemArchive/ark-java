@@ -137,7 +137,7 @@ class Transaction extends Object {
     return tx
   }
 
-  static Transaction createSecondSignature(secondPassphrase, passphrase){
+  static Transaction createSecondSignature(String secondPassphrase, String passphrase){
     def tx = new Transaction(type:1, amount:0, fee:500000000)
     tx.asset.signature = BaseEncoding.base16().lowerCase().encode(Crypto.getKeys(secondPassphrase).getPubKey())
     tx.timestamp = Slot.getTime()
