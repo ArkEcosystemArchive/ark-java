@@ -1,3 +1,6 @@
 .gradle
 build
 .tags
+*.iml
+.idea/
+out/
