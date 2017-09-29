@@ -162,5 +162,10 @@ class Transaction extends Object {
 
   //TODO: create multisignature
 
+  //Custom getter to map type to byte value
+  byte getType()
+  {
+    return type.getByteValue()
+  }
 
 }
