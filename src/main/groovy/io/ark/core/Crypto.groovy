@@ -1,8 +1,6 @@
 package io.ark.core
 
-import java.nio.*
 import org.bitcoinj.core.*
-import org.bitcoinj.crypto.*
 import com.google.common.io.BaseEncoding
 import org.spongycastle.crypto.digests.RIPEMD160Digest
 

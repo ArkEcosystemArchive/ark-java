@@ -4,8 +4,22 @@ import java.nio.*
 import com.google.common.io.BaseEncoding
 import com.google.gson.Gson
 import org.bitcoinj.core.*
-import org.bitcoinj.crypto.*
 import groovy.transform.*
+
+enum TransactionType {
+  NORMAL(0), SECONDSIGNITURE(1), DELEGATE(2), VOTE(3)
+
+  private final int value
+
+  TransactionType(int value)
+  {
+    this.value = value as byte
+  }
+
+  byte getByteValue() {
+    return value
+  }
+}
 
 @Canonical
 class Transaction extends Object {
@@ -13,7 +27,7 @@ class Transaction extends Object {
   String recipientId
   Long amount
   Long fee
-  byte type
+  TransactionType type
   String vendorField
   String signature
   String signSignature
@@ -26,7 +40,7 @@ class Transaction extends Object {
     ByteBuffer buffer = ByteBuffer.allocate(1000)
     buffer.order(ByteOrder.LITTLE_ENDIAN)
 
-    buffer.put type
+    buffer.put type.getByteValue()
     buffer.putInt timestamp
     buffer.put BaseEncoding.base16().lowerCase().decode(senderPublicKey)
 
@@ -55,13 +69,13 @@ class Transaction extends Object {
     buffer.putLong amount
     buffer.putLong fee
 
-    if(type==1){
+    if(type == TransactionType.SECONDSIGNITURE){
       buffer.put BaseEncoding.base16().lowerCase().decode(asset.signature)
     }
-    else if(type==2){
+    else if(type == TransactionType.DELEGATE){
       buffer.put asset.username.bytes
     }
-    else if(type==3){
+    else if(type == TransactionType.VOTE){
       buffer.put asset.votes.join("").bytes
     }
     // TODO: multisignature
@@ -106,7 +120,7 @@ class Transaction extends Object {
   }
 
   static Transaction createTransaction(String recipientId, long satoshiAmount, String vendorField, String passphrase, String secondPassphrase = null){
-    def tx = new Transaction(type:0, recipientId:recipientId, amount:satoshiAmount, fee:10000000, vendorField:vendorField)
+    def tx = new Transaction(type:TransactionType.NORMAL, recipientId:recipientId, amount:satoshiAmount, fee:10000000, vendorField:vendorField)
     tx.timestamp = Slot.getTime()
     tx.sign(passphrase)
     if(secondPassphrase)
@@ -116,7 +130,7 @@ class Transaction extends Object {
   }
 
   static Transaction createVote(ArrayList votes, String passphrase, String secondPassphrase = null){
-    def tx = new Transaction(type:3, amount:0, fee:100000000)
+    def tx = new Transaction(type:TransactionType.VOTE, amount:0, fee:100000000)
     tx.asset.votes = votes
     tx.timestamp = Slot.getTime()
     tx.sign(passphrase)
@@ -127,7 +141,7 @@ class Transaction extends Object {
   }
 
   static Transaction createDelegate(String username, String passphrase, String secondPassphrase = null){
-    def tx = new Transaction(type:2, amount:0, fee:2500000000)
+    def tx = new Transaction(type:TransactionType.DELEGATE, amount:0, fee:2500000000)
     tx.asset.username = username
     tx.timestamp = Slot.getTime()
     tx.sign(passphrase)
@@ -138,7 +152,7 @@ class Transaction extends Object {
   }
 
   static Transaction createSecondSignature(String secondPassphrase, String passphrase){
-    def tx = new Transaction(type:1, amount:0, fee:500000000)
+    def tx = new Transaction(type:TransactionType.SECONDSIGNITURE, amount:0, fee:500000000)
     tx.asset.signature = BaseEncoding.base16().lowerCase().encode(Crypto.getKeys(secondPassphrase).getPubKey())
     tx.timestamp = Slot.getTime()
     tx.sign(passphrase)
