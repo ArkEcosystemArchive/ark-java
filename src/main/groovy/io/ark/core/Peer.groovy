@@ -74,6 +74,24 @@ class Peer extends Object {
     future.get()
   }
 
+  public Map getTransactions(Account account, int amount)
+  {
+    if(!http) http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
+
+    Map bob = networkHeaders
+    bob.put("recipientId", account.getAddress())
+    bob.put("senderId", account.getAddress())
+    bob.put("limit", amount)
+
+    Future future = http.get(path: "/api/transactions",
+    contentType: JSON,
+    query: [recipientId:account.getAddress(),
+            senderId:account.getAddress(),
+            limit:amount])
+
+    future.get()
+  }
+
   public Map getPeers(){
     request("GET", "/peer/list").get()
   }

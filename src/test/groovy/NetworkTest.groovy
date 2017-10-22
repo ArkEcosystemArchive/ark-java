@@ -77,4 +77,15 @@ class NetworkTest extends Specification {
         result == mainnet.broadcastMax
     }
 
+    def "Should Get transactions associated with an Account"(){
+        setup:
+        def peer = mainnet.randomPeer
+        when:
+        def account = Account.newInstance([address:'AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25'])
+        def result = peer.getTransactions(account, 2)
+        then:
+        result.get("success") == true
+        result.get("count").equals("2")
+        result.get("transactions") != null
+    }
 }
