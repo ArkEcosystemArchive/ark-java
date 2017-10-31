@@ -26,6 +26,11 @@ class Peer extends Object {
 
   // return Future that will deliver the JSON as a Map
   public Future request(String method, String path, body = [:]){
+    request(method, path, null, body);
+  }
+
+  // return Future that will deliver the JSON as a Map
+  public Future request(String method, String path, String query, body = [:]){
     if(!http)
       http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
 
@@ -45,6 +50,7 @@ class Peer extends Object {
 
     http.request(_method, JSON) {
       uri.path = path
+      uri.rawQuery = query
       headers << networkHeaders
       body = body
 
