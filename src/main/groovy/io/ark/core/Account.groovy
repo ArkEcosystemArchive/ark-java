@@ -9,6 +9,11 @@ class Account extends Object {
   List votes
   int rate
 
+  Account(String address)
+  {
+    this.address = address
+  }
+
   public boolean applyTransaction(transaction){
     balance -= transaction.amount + transaction.fee
     balance > -1

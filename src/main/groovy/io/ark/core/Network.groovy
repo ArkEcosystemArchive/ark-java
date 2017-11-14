@@ -6,7 +6,7 @@ class Network extends Object {
   String name
   int port
   byte prefix
-  String version = "1.0"
+  String version = "1.0.1"
   int broadcastMax = 10
   List<String> peerseed = []
   List<Peer> peers = []

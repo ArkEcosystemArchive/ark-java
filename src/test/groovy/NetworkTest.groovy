@@ -77,4 +77,49 @@ class NetworkTest extends Specification {
         result == mainnet.broadcastMax
     }
 
+    def "Should Get transactions associated with an Account"(){
+        setup:
+        def peer = mainnet.randomPeer
+        when:
+        def account = Account.newInstance([address:'AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25'])
+        def result = peer.getTransactions(account, 2)
+        then:
+        result.get("success") == true
+        result.get("count").equals("2") //Count doesnt include filtering from api call
+        (result.get("transactions") as List).size() == 2
+    }
+
+    def "Should only return one transaction from an Account"(){
+        setup:
+        def peer = mainnet.randomPeer
+        when:
+        def account = Account.newInstance([address:'AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25'])
+        def result = peer.getTransactions(account, 1)
+        then:
+        result.get("success") == true
+        result.get("count").equals("2") //Count doesnt include filtering from api call
+        (result.get("transactions") as List).size() == 1
+    }
+
+    def "Should be able to fetch a list of peers"(){
+        setup:
+        def peer = mainnet.randomPeer
+        when:
+        def result = peer.getPeers()
+        then:
+        result.get("success") == true
+        (result.get("peers") as List).size() > 0
+    }
+
+    def "Should be able to fetch a list of delegates"(){
+        setup:
+        def peer = mainnet.randomPeer
+        when:
+        def result = peer.getDelegates()
+        then:
+        result.get("success") == true
+        (result.get("totalCount") as int) > 0
+        (result.get("delegates") as List).size() > 0
+    }
+
 }
