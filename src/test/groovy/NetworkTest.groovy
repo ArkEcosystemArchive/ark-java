@@ -77,6 +77,16 @@ class NetworkTest extends Specification {
         result == mainnet.broadcastMax
     }
 
+    def "Should filter get request with query params"(){
+        setup:
+        def peer = mainnet.randomPeer
+        when:
+        def result = peer.request("GET", "/api/blocks/", [ offset:'100', limit: '50' ]).get()
+        then:
+        result.get("success") == true
+        (result.get("blocks") as List).size() == 50
+    }
+
     def "Should Get transactions associated with an Account"(){
         setup:
         def peer = mainnet.randomPeer
