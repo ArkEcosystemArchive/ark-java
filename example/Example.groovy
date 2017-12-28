@@ -1,8 +1,4 @@
 #!/usr/bin/env groovy
-@GrabResolver(name='ark-java', root='https://dl.bintray.com/arkecosystem/ark-java/')
-@Grab('io.ark.lite:client:0.2')
-import io.ark.core.*
-
 // grab mainnet network settings and warm it up
 def mainnet = Network.Mainnet
 mainnet.warmup()

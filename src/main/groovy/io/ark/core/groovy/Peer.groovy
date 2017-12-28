@@ -1,4 +1,4 @@
-package io.ark.core
+package io.ark.core.groovy
 
 import groovyx.net.http.AsyncHTTPBuilder
 import groovy.transform.*
@@ -16,22 +16,21 @@ class Peer extends Object {
     private AsyncHTTPBuilder http
     private Map networkHeaders
 
-    public static Peer create(String string, networkHeaders = Network.Mainnet.headers){
+    public static Peer create(String string, networkHeaders = Network.Mainnet.headers) {
         def data = string.split(":")
         def port = data[1] as int
         def protocol = "http://"
-        if(port%1000 == 443) protocol = "https://"
-        new Peer(ip: data[0], port: port, protocol: protocol, networkHeaders:networkHeaders)
+        if (port % 1000 == 443) protocol = "https://"
+        new Peer(ip: data[0], port: port, protocol: protocol, networkHeaders: networkHeaders)
     }
 
     // return Future that will deliver the JSON as a Map
-    // the "query" argument allows to pass URL parameters as param1: 'value1', param2: 'value2'... string
-    public Future request(String method, String path, query = [:], body = [:]){
-        if(!http)
+    public Future request(String method, String path, body = [:]) {
+        if (!http)
             http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
 
         def _method
-        switch(method){
+        switch (method) {
             case "POST":
                 _method = POST
                 break
@@ -46,7 +45,6 @@ class Peer extends Object {
 
         http.request(_method, JSON) {
             uri.path = path
-            uri.query = query
             headers << networkHeaders
             body = body
 
@@ -57,29 +55,17 @@ class Peer extends Object {
         }
     }
 
-    public Map getStatus(){
+    public Map getStatus() {
         request("GET", "/peer/status").get()
     }
 
-    /*
-     * TODO: Actually use this to get an updated list of peers instead of the
-     * constantly breaking hardcoded one in the Network class
-     */
-    public Map getPeers(){
-        request("GET", "/peer/list").get()
-    }
-
-    public Map getDelegates(){
-        request("GET", "/api/delegates").get()
-    }
-
-    public Map postTransaction(Transaction transaction){
-        if(!http)
+    public Map postTransaction(Transaction transaction) {
+        if (!http)
             http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
         Future future = http.request(POST, JSON) {
             uri.path = "/peer/transactions"
             headers << networkHeaders
-            body = [transactions:[transaction.toObject()]]
+            body = [transactions: [transaction.toObject()]]
 
             response.success = { resp, json ->
                 json
@@ -88,21 +74,11 @@ class Peer extends Object {
         future.get()
     }
 
-    public Map getTransactions(Account account, int amount)
-    {
-        if(!http) http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
-
-        Future future = http.get(path: "/api/transactions",
-                headers: networkHeaders,
-                contentType: JSON,
-                query: [recipientId:account.getAddress(),
-                        senderId:account.getAddress(),
-                        limit:amount])
-
-        future.get()
+    public Map getPeers() {
+        request("GET", "/peer/list").get()
     }
 
-    public Map leftShift(Transaction transaction){
+    public Map leftShift(Transaction transaction) {
         postTransaction(transaction)
     }
 
