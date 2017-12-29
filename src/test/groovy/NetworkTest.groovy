@@ -16,14 +16,14 @@ class NetworkTest extends Specification {
   @Shared devnet = Network.Devnet
 
   def setupSpec() {
-    mainnet.warmup()
-    devnet.warmup()
+    mainnet.warmup(2)
+    devnet.warmup(2)
   }
 
   //Fails if any peer is unreachable.
   //Fails if peer lookup takes too long
   //Fails if any peer doesnt report back success status
-  @Timeout(value = 5, unit = TimeUnit.MINUTES)
+  @Timeout(value = 30, unit = TimeUnit.SECONDS)
   def "All peers should be reachable"() {
     setup:
     boolean success = true
@@ -37,6 +37,15 @@ class NetworkTest extends Specification {
     //Fail fast if an exception is thrown
     noExceptionThrown()
     success
+  }
+
+  @Timeout(value = 30, unit = TimeUnit.SECONDS)
+  def "Should get a fresh peer list"() {
+    when:
+    mainnet.getFreshPeers(10, 100000)
+
+    then:
+    true
   }
 
   def "Should connect to Mainnet"() {
@@ -79,7 +88,7 @@ class NetworkTest extends Specification {
     setup:
     def peer = mainnet.randomPeer
     when:
-    def account = Account.newInstance([address: 'AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25'])
+    def account = new Account('AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25', mainnet)
     def result = peer.getTransactions(account, 2)
     then:
     result.get("success") == true
@@ -91,7 +100,7 @@ class NetworkTest extends Specification {
     setup:
     def peer = mainnet.randomPeer
     when:
-    def account = Account.newInstance([address: 'AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25'])
+    def account = new Account('AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25', mainnet)
     def result = peer.getTransactions(account, 1)
     then:
     result.get("success") == true
