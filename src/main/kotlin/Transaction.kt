@@ -1,6 +1,6 @@
-import com.google.common.io.BaseEncoding
+import Crypto.base16Decode
+import Crypto.base16Encode
 import com.google.gson.Gson
-import io.ark.core.groovy.Crypto
 import io.ark.core.groovy.Slot
 import org.bitcoinj.core.Base58
 import java.nio.ByteBuffer
@@ -22,21 +22,18 @@ data class Transaction(var timestamp: Int? = null,
 {
     private val bufferSize = 1000
 
-    private fun base16Encode(bytes: ByteArray) = BaseEncoding.base16().lowerCase().encode(bytes)
-    private fun base16Decode(chars: String?) = BaseEncoding.base16().lowerCase().decode(chars)
-
     fun toJson(): String = Gson().toJson(this)
     fun fromJson(input: String): Transaction = Gson().fromJson(input, Transaction::class.java)
 
     private fun sign(passphrase: String)
     {
-        senderPublicKey = base16Encode(Crypto.getKeys(passphrase).pubKey)
-        signature = base16Encode(Crypto.sign(this, passphrase).encodeToDER())
+        senderPublicKey = base16Encode(Crypto.getKeys(passphrase)!!.pubKey)
+        signature = base16Encode(Crypto.sign(this, passphrase)!!.encodeToDER())
     }
 
     private fun secondSign(passphrase: String)
     {
-        signSignature = base16Encode(Crypto.secondSign(this, passphrase).encodeToDER())
+        signSignature = base16Encode(Crypto.secondSign(this, passphrase)!!.encodeToDER())
     }
 
     fun createTransaction(recipientId: String, satoshiAmount: Long, vendorField: String, passphrase: String, secondPassphrase: String? = null): Transaction
@@ -62,7 +59,7 @@ data class Transaction(var timestamp: Int? = null,
     fun createSecondSignature(passphrase: String, secondPassphrase: String): Transaction
     {
         val transaction = Transaction(type = 2, amount = 0, fee = 2500000000)
-        transaction.asset.signature = base16Encode(Crypto.getKeys(secondPassphrase).pubKey)
+        transaction.asset.signature = base16Encode(Crypto.getKeys(secondPassphrase)!!.pubKey)
         return processTransaction(transaction, passphrase, secondPassphrase)
     }
 
@@ -94,8 +91,8 @@ data class Transaction(var timestamp: Int? = null,
         order(ByteOrder.LITTLE_ENDIAN)
 
         put(type)
-        timestamp?.let { putInt(it) }
-        put(base16Decode(senderPublicKey))
+        putInt(timestamp!!)
+        put(base16Decode(senderPublicKey!!))
 
         requesterPublicKey?.let { put(base16Decode(it)) }
 
@@ -118,9 +115,9 @@ data class Transaction(var timestamp: Int? = null,
         // TODO: change type to enum from Byte
         when(type.toInt())
         {
-            1 -> put(base16Decode(asset.signature))
-            2 -> put(asset.username.toByteArray())
-            3 -> put(asset.votes.toByteArray())
+            1 -> put(base16Decode(asset.signature!!))
+            2 -> put(asset.username?.toByteArray())
+            3 -> put(asset.votes?.joinToString()?.toByteArray())
         }
 
         if(!skipSignature) put(base16Decode(signature!!))
