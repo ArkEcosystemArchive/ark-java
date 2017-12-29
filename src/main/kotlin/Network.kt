@@ -6,10 +6,11 @@ data class Network(
         var name: String,
         var broadcastMax: Int = 10,
         var port: Int,
-        var prefix: Byte,
-        var peerseed: List<String>,
+        var prefix: Int,
+        var peerseed: List<String>? = null,
         var peers: MutableList<Peer> = mutableListOf())
 {
+
     val random = Random()
 
     fun getHeaders(): Triple<String, String, Int>
@@ -30,7 +31,7 @@ data class Network(
     {
         for (i in 1..broadcastMax)
         {
-           getRandomPeer().postTransaction(transaction)
+            getRandomPeer().postTransaction(transaction)
         }
 
         return broadcastMax
@@ -38,6 +39,6 @@ data class Network(
 
     private fun getRandomPeer(): Peer
     {
-       return peers[random.nextInt(peers.size)]
+        return peers[random.nextInt(peers.size)]
     }
 }

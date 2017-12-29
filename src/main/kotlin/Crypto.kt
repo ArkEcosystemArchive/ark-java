@@ -59,7 +59,7 @@ object Crypto
             doFinal(out, 0)
         }
 
-        return VersionedChecksummedBytes(networkVersion, out).toBase58()
+        return ArkAddress(NetworkConstants.mainnet, out).toBase58()
     }
 
     private fun verifyBytes(bytes: ByteArray, signature: ByteArray, publicKey: ByteArray): Boolean
