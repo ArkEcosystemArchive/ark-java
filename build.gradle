@@ -50,10 +50,6 @@ dependencies {
 
     compile 'com.github.kittinunf.fuel:fuel-moshi:1.12.0'
 
-    //Groovy... kept for reference
-    compile 'org.codehaus.groovy:groovy-all:2.3.7'
-    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
-
     //Crypto
     compile 'org.bitcoinj:bitcoinj-core:0.14.5'
 

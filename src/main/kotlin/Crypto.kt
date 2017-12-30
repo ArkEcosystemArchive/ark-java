@@ -61,14 +61,13 @@ object Crypto
         return ArkAddress(NetworkConstants.mainnet, out).toBase58()
     }
 
-    private fun verifyBytes(bytes: ByteArray, signature: ByteArray, publicKey: ByteArray): Boolean
-    {
-        return ECKey.verify(Sha256Hash.hash(bytes), signature, publicKey)
-    }
-
-    private fun signBytes(bytes: ByteArray, passphrase: String): ECKey.ECDSASignature?
+    fun signBytes(bytes: ByteArray, passphrase: String): ECKey.ECDSASignature?
     {
         return getKeys(passphrase)?.sign(Sha256Hash.of(bytes))
     }
 
+    fun verifyBytes(bytes: ByteArray, signature: ByteArray, publicKey: ByteArray): Boolean
+    {
+        return ECKey.verify(Sha256Hash.hash(bytes), signature, publicKey)
+    }
 }

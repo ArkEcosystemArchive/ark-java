@@ -29,7 +29,7 @@ data class Network(
         return true
     }
 
-    fun leftShift(transaction: Transaction): Int
+    fun broadcast(transaction: Transaction): Int
     {
         for (i in 1..broadcastMax)
         {

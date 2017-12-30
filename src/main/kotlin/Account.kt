@@ -13,11 +13,15 @@ data class Account(var address: String?,
 
     fun undoTransaction(transaction: Transaction): Boolean
     {
-        return true
+        balance += transaction.amount + transaction.fee
+        return (balance > -1)
     }
 
     fun verifyTransaction(transaction: Transaction): Verification
     {
+        if (balance < transaction.amount + transaction.fee)
+             "Account $address does not have enough balance: $balance"
+
         return Verification()
     }
 }

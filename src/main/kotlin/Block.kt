@@ -1,23 +1,80 @@
-class Block {
-    var version: Byte = 0;
+import Crypto.base16Decode
+import Crypto.base16Encode
+import Crypto.verifyBytes
+import org.bitcoinj.core.ECKey
+import java.math.BigInteger
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
-    var totalAmount: Long = 0;
-    var totalFee: Long = 0;
-    var reward: Long = 0;
+data class Block(var previousBlock: String,
+                 var version: Byte,
+                 var totalAmount: Long,
+                 var totalFee: Long,
+                 var reward: Long,
+                 var payloadHash: String?,
+                 var generatorPublicKey: String,
+                 var height: Int,
+                 var timestamp: Int,
+                 var numberOfTransactions: Int,
+                 var payloadLength: Int,
+                 var blockSigniture: String,
+                 var id: String)
+{
+    private val bufferSize = 1000
 
-    var previousBlock: String = "";
-    var payloadHash: String = "";
-    var generatorPublicKey: String = "";
+    fun sign(passphrase: String)
+    {
+        blockSigniture = base16Encode(Crypto.signBytes(getBytes(), passphrase)!!.encodeToDER())
+    }
 
-    var height: Int = 0;
-    var timestamp: Int = 0;
-    var numberOfTransactions: Int = 0;
-    var payloadLength: Int = 0;
-    var size: Int = 0;
+    fun verify(): Boolean
+    {
+        var keys = ECKey.fromPublicOnly(base16Decode(generatorPublicKey))
+        var signature = base16Decode(blockSigniture)
+        var bytes = getBytes()
 
-    var transactions: List<Transaction>? = null;
-    var transactionIDs: List<Transaction>? = null;
+        return verifyBytes(bytes, signature, keys.pubKey)
+    }
 
-    var blockSigniture: String = "";
-    var id: String = "";
+    fun setId()
+    {
+        val bytesId = getBytes().sliceArray(0..7)
+        id = BigInteger(bytesId).toString()
+    }
+
+    private fun getBytes(includeSignature: Boolean = false): ByteArray
+    {
+        var output = ByteArray(0)
+        val buffer: ByteBuffer = prepareBuffer(ByteBuffer.allocate(bufferSize), includeSignature)
+
+        with(buffer)
+        {
+            output = ByteArray(position())
+            rewind()
+            get(output)
+        }
+
+        return output
+    }
+
+    private fun prepareBuffer(buffer: ByteBuffer, includeSignature: Boolean) = buffer.apply{
+        order(ByteOrder.LITTLE_ENDIAN)
+
+        put(version)
+        putInt(timestamp)
+        putInt(height)
+        put(BigInteger(previousBlock).toByteArray())
+        putInt(numberOfTransactions)
+        putLong(totalAmount)
+        putLong(totalFee)
+        putLong(reward)
+        putInt(payloadLength)
+
+        //TODO: create payloadhash from transactions
+
+        put(base16Decode(payloadHash!!))
+        put(base16Decode(generatorPublicKey))
+
+        if (includeSignature) put(base16Decode(blockSigniture))
+    }
 }
