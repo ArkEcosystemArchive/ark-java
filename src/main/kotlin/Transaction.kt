@@ -1,7 +1,6 @@
 import Crypto.base16Decode
 import Crypto.base16Encode
 import com.google.gson.Gson
-import io.ark.core.groovy.Slot
 import org.bitcoinj.core.Base58
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

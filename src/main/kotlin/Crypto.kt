@@ -1,7 +1,6 @@
 import com.google.common.io.BaseEncoding
 import org.bitcoinj.core.ECKey
 import org.bitcoinj.core.Sha256Hash
-import org.bitcoinj.core.VersionedChecksummedBytes
 import org.spongycastle.crypto.digests.RIPEMD160Digest
 
 object Crypto

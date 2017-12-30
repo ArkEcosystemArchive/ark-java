@@ -22,7 +22,7 @@ data class Network(
     {
         if (peers.isNotEmpty()) return false
 
-        peerseed.forEach { peers.add(Peer(it, this.getHeaders())) }
+        peerseed!!.forEach { peers.add(Peer(it, this.getHeaders())) }
 
         return true
     }
