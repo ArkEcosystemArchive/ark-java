@@ -1,13 +1,8 @@
-import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.fuel.httpPut
+import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.github.kittinunf.result.Result
-import java.util.Collections.emptyMap
-import java.util.concurrent.FutureTask
 
-
-class Peer(peerInfo: String, headers: Triple<String, String, Int>)
+class Peer(peerInfo: String, private val headers: Map<String, Any>)
 {
     private var protocol: String = "http://"
     private var status: String = "NEW"
@@ -21,43 +16,29 @@ class Peer(peerInfo: String, headers: Triple<String, String, Int>)
         if (port % 1000 == 443) protocol = "https://"
     }
 
-    fun request(method: String, path: String, body: Map<String, String> = emptyMap()): FutureTask<Request>
+    fun getStatus(): PeerData
     {
-        var result: Request? = null
+        var peerInfo: PeerData? = null
 
-        when (method)
-        {
-            "POST" -> result = path.httpPost()
-            "PUT" -> result = path.httpPut()
-            "GET" -> result = path.httpGet()
-        }
-
-        var that = this;
-
-    return FutureTask {
-            result!!.responseString { request, response, result ->
-
-                when (result)
-                {
-                    is Result.Success ->
+        "/peer/status"
+                .httpGet()
+                .header(headers)
+                .responseObject(moshiDeserializerOf<PeerData>()) { _, _, result ->
+                    when(result)
                     {
-                        that.status = "OK"
-                        return response.responseMessage
+                        is Result.Success ->
+                        {
+                            status = "OK"
+                            peerInfo = result.component1()!!
+                        }
                     }
                 }
-            }
-        }
-    }
 
-    fun getStatus(): Map<String, String>
-    {
-        return request("GET", "/peer/status").get()
+        return peerInfo!!
     }
 
     fun postTransaction(transaction: Transaction)
     {
 
     }
-
-
 }

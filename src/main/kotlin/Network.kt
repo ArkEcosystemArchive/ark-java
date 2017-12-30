@@ -10,12 +10,14 @@ data class Network(
         var peerseed: List<String>? = null,
         var peers: MutableList<Peer> = mutableListOf())
 {
+    private val random = Random()
 
-    val random = Random()
-
-    fun getHeaders(): Triple<String, String, Int>
+    fun getHeaders(): Map<String, Any>
     {
-        return Triple(nethash, version, port)
+        return mapOf(
+                "nethash" to nethash,
+                "version" to version,
+                "port" to port)
     }
 
     fun warmup(): Boolean

@@ -115,8 +115,8 @@ data class Transaction(var timestamp: Int? = null,
         when(type.toInt())
         {
             1 -> put(base16Decode(asset.signature!!))
-            2 -> put(asset.username?.toByteArray())
-            3 -> put(asset.votes?.joinToString()?.toByteArray())
+            2 -> put(asset.username!!.toByteArray())
+            3 -> put(asset.votes!!.joinToString().toByteArray())
         }
 
         if(!skipSignature) put(base16Decode(signature!!))
