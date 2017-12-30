@@ -1,6 +1,7 @@
 import Crypto.base16Decode
 import Crypto.base16Encode
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import org.bitcoinj.core.Base58
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -21,7 +22,7 @@ data class Transaction(var timestamp: Int? = null,
 {
     private val bufferSize = 1000
 
-    fun toJson(): String = Gson().toJson(this)
+    fun toJson(): JsonElement? = Gson().toJsonTree(this)
     fun fromJson(input: String): Transaction = Gson().fromJson(input, Transaction::class.java)
 
     private fun sign(passphrase: String)

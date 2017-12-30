@@ -21,3 +21,7 @@ data class Header(
         val generatorPublicKey: String,
         val blockSignature: String
 )
+
+data class TransactionData(
+        val id: Long
+)
