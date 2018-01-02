@@ -1,3 +1,10 @@
+
+buildscript {
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+    }
+}
+
 // Apply the groovy plugin to add support for Groovy
 plugins {
     id 'maven'
@@ -5,9 +12,20 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.1.51"
 }
 
+apply plugin: 'org.junit.platform.gradle.plugin'
+
 repositories {
     jcenter()
     mavenCentral()
+    maven { url "http://dl.bintray.com/jetbrains/spek" }
+}
+
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
+    }
 }
 
 model {
@@ -29,7 +47,7 @@ task createPom {
         pom {
             project {
                 groupId 'io.ark.lite'
-                version '0.4'
+                version '1.0'
                 artifactId 'client'
                 licenses {
                     license {
@@ -38,7 +56,7 @@ task createPom {
                     }
                 }
             }
-        }.writeTo("$buildDir/libs/client-0.4.pom")
+        }.writeTo("$buildDir/libs/client-1.0.pom")
     }
 }
 
@@ -64,6 +82,10 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
 
     //Testing
+    testCompile 'org.jetbrains.spek:spek-api:1.1.5'
+    testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.1.5'
+
+    //Legacy Testing TODO: Remove after test suite is complete
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'junit:junit:4.11'
 }
