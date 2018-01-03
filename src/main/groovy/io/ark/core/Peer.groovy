@@ -1,107 +1,111 @@
 package io.ark.core
 
+import groovy.util.logging.Slf4j
 import groovyx.net.http.AsyncHTTPBuilder
-import groovy.transform.*
-import static groovyx.net.http.Method.*
-import static groovyx.net.http.ContentType.JSON
+import groovyx.net.http.Method
+
 import java.util.concurrent.Future
 
-@Canonical
+import static groovyx.net.http.ContentType.JSON
+import static groovyx.net.http.Method.GET
+import static groovyx.net.http.Method.POST
+
+@Slf4j
 class Peer extends Object {
-    String ip
-    int port
-    String protocol = "http://"
-    String status = "NEW"
+  String ip
+  int port
+  String protocol = "http://"
+  String status = "NEW"
+  Network network
+  AsyncHTTPBuilder httpBuilder
 
-    private AsyncHTTPBuilder http
-    private Map networkHeaders
+  static Peer create(String string, Network network) {
+    def data = string.split(":")
+    def port = data[1] as int
+    new Peer(data[0], port, network)
+  }
 
-    public static Peer create(String string, networkHeaders = Network.Mainnet.headers){
-        def data = string.split(":")
-        def port = data[1] as int
-        def protocol = "http://"
-        if(port%1000 == 443) protocol = "https://"
-        new Peer(ip: data[0], port: port, protocol: protocol, networkHeaders:networkHeaders)
+  Peer(String ip, int port, Network network) {
+    this.ip = ip
+    this.port = port
+    this.protocol = (port % 1000 == 443) ? "https://" : "http://"
+    this.network = network
+  }
+
+  AsyncHTTPBuilder getHttp() {
+    if (!httpBuilder) {
+      httpBuilder = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
+      httpBuilder.setHeaders(network.getHeaders())
     }
+    httpBuilder
+  }
 
-    // return Future that will deliver the JSON as a Map
-    public Future request(String method, String path, body = [:]){
-        if(!http)
-            http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
+  // return Future that will deliver the JSON as a Map
+  public Future request(Method method, String path, Map queryParams = [:], body = [:]) {
+    getHttp().request(method, JSON) {
+      uri.path = path
+      uri.query = queryParams
+      body = body
 
-        def _method
-        switch(method){
-            case "POST":
-                _method = POST
-                break
-            case "PUT":
-                _method = PUT
-                break
-            case "GET":
-                _method = GET
-        }
+      log.debug("Request: " + uri)
 
-        def that = this
-
-        http.request(_method, JSON) {
-            uri.path = path
-            headers << networkHeaders
-            body = body
-
-            response.success = { resp, json ->
-                that.status = "OK"
-                json
-            }
-        }
+      response.success = { resp, json ->
+        this.status = "OK"
+        json
+      }
     }
+  }
 
-    public Map getStatus(){
-        request("GET", "/peer/status").get()
+  public Map getStatus() {
+    def status = request(GET, "/peer/status").get()
+    status
+  }
+
+  boolean isOk() {
+    try {
+      return getStatus().get("success") as boolean
+    } catch (Exception e) {
+      return false
     }
+  }
 
-    /*
-     * TODO: Actually use this to get an updated list of peers instead of the
-     * constantly breaking hardcoded one in the Network class
-     */
-    public Map getPeers(){
-        request("GET", "/peer/list").get()
+  /*
+   * TODO: Actually use this to get an updated list of peers instead of the
+   * constantly breaking hardcoded one in the Network class
+   */
+
+  public Map getPeers() {
+    request(GET, "/peer/list").get()
+  }
+
+  public Map getDelegates() {
+    request(GET, "/api/delegates").get()
+  }
+
+  public Map postTransaction(Transaction transaction) {
+    Future future = httpBuilder.request(POST, JSON) {
+      uri.path = "/peer/transactions"
+      body = [transactions: [transaction.toObject()]]
+
+      response.success = { resp, json ->
+        json
+      }
     }
+    future.get()
+  }
 
-    public Map getDelegates(){
-        request("GET", "/api/delegates").get()
-    }
+  public Map getTransactions(Account account, int amount) {
+    Future future = httpBuilder.get(path: "/api/transactions",
+        contentType: JSON,
+        query: [recipientId: account.getAddress(),
+                senderId   : account.getAddress(),
+                limit      : amount])
 
-    public Map postTransaction(Transaction transaction){
-        if(!http)
-            http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
-        Future future = http.request(POST, JSON) {
-            uri.path = "/peer/transactions"
-            headers << networkHeaders
-            body = [transactions:[transaction.toObject()]]
+    future.get()
+  }
 
-            response.success = { resp, json ->
-                json
-            }
-        }
-        future.get()
-    }
-
-    public Map getTransactions(Account account, int amount)
-    {
-        if(!http) http = new AsyncHTTPBuilder(uri: "${protocol}${ip}:${port}")
-
-        Future future = http.get(path: "/api/transactions",
-                headers: networkHeaders,
-                contentType: JSON,
-                query: [recipientId:account.getAddress(),
-                        senderId:account.getAddress(),
-                        limit:amount])
-
-        future.get()
-    }
-
-    public Map leftShift(Transaction transaction){
-        postTransaction(transaction)
-    }
+  public Map leftShift(Transaction transaction) {
+    postTransaction(transaction)
+  }
 
 }
