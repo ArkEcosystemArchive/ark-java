@@ -5,7 +5,7 @@ object Slot
 {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-    fun getTime(date: Date?): Int
+    fun getTime(date: Date = Date()): Int
     {
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
 

@@ -25,6 +25,9 @@ object NetworkTest: Spek({
         on("Broadcast transaction")
         {
            it("should broadcast to the max amount")
+           {
+
+           }
         }
     }
 

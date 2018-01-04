@@ -23,53 +23,16 @@ data class Transaction(var timestamp: Int? = null,
     private val bufferSize = 1000
 
     fun toJson(): JsonElement? = Gson().toJsonTree(this)
-    fun fromJson(input: String): Transaction = Gson().fromJson(input, Transaction::class.java)
 
-    private fun sign(passphrase: String)
+    fun sign(passphrase: String)
     {
         senderPublicKey = base16Encode(Crypto.getKeys(passphrase)!!.pubKey)
         signature = base16Encode(Crypto.sign(this, passphrase)!!.encodeToDER())
     }
 
-    private fun secondSign(passphrase: String)
+    fun secondSign(passphrase: String)
     {
         signSignature = base16Encode(Crypto.secondSign(this, passphrase)!!.encodeToDER())
-    }
-
-    fun createTransaction(recipientId: String, satoshiAmount: Long, vendorField: String, passphrase: String, secondPassphrase: String? = null): Transaction
-    {
-        val transaction = Transaction(type = 0, recipientId = recipientId, amount = satoshiAmount, fee = 10000000, vendorField = vendorField)
-        return processTransaction(transaction, passphrase)
-    }
-
-    fun createVote(votes: List<String>, passphrase: String, secondPassphrase: String? = null): Transaction
-    {
-        val transaction = Transaction(type = 3, amount = 0, fee = 100000000)
-        transaction.asset.votes = votes
-        return processTransaction(transaction, passphrase)
-    }
-
-    fun createDelegate(username: String, passphrase: String, secondPassphrase: String? = null): Transaction
-    {
-        val transaction = Transaction(type = 2, amount = 0, fee = 2500000000)
-        transaction.asset.username = username
-        return processTransaction(transaction, passphrase)
-    }
-
-    fun createSecondSignature(passphrase: String, secondPassphrase: String): Transaction
-    {
-        val transaction = Transaction(type = 2, amount = 0, fee = 2500000000)
-        transaction.asset.signature = base16Encode(Crypto.getKeys(secondPassphrase)!!.pubKey)
-        return processTransaction(transaction, passphrase, secondPassphrase)
-    }
-
-    private fun processTransaction(transaction: Transaction, passphrase: String, secondPassphrase: String? = null) : Transaction
-    {
-        transaction.timestamp = Slot.getTime(Date())
-        transaction.sign(passphrase)
-        secondPassphrase?.let { transaction.secondSign(it) }
-        transaction.id = Crypto.getId(transaction)
-        return transaction
     }
 
     fun toBytes(skipSignature: Boolean = true, skipSecondSignature: Boolean = true ): ByteArray
@@ -120,8 +83,8 @@ data class Transaction(var timestamp: Int? = null,
             3 -> put(asset.votes!!.joinToString().toByteArray())
         }
 
-        if(!skipSignature) put(base16Decode(signature!!))
+        if(!skipSignature && signature != null) put(base16Decode(signature!!))
 
-        if(!skipSecondSignature) put(base16Decode(signSignature!!))
+        if(!skipSecondSignature && signSignature != null) put(base16Decode(signSignature!!))
     }
 }

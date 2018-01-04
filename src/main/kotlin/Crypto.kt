@@ -1,4 +1,5 @@
 import com.google.common.io.BaseEncoding
+import com.google.gson.Gson
 import org.bitcoinj.core.ECKey
 import org.bitcoinj.core.Sha256Hash
 import org.spongycastle.crypto.digests.RIPEMD160Digest
@@ -9,6 +10,7 @@ object Crypto
 
     fun base16Encode(bytes: ByteArray) = BaseEncoding.base16().lowerCase().encode(bytes)!!
     fun base16Decode(chars: String) = BaseEncoding.base16().lowerCase().decode(chars)!!
+    fun fromJson(input: String): Transaction = Gson().fromJson(input, Transaction::class.java)
 
     fun sign(transaction: Transaction, passphrase: String): ECKey.ECDSASignature?
     {
@@ -44,6 +46,13 @@ object Crypto
                 keys.pubKey)
     }
 
+    fun createTransaction(recipientId: String, satoshiAmount: Long, vendorField: String, passphrase: String, secondPassphrase: String? = null): Transaction
+    {
+        val transaction = Transaction(type = 0, recipientId = recipientId, amount = satoshiAmount, fee = 10000000, vendorField = vendorField)
+        return processTransaction(transaction, passphrase)
+    }
+
+
     fun getId(transaction: Transaction): String
     {
         return base16Encode(Sha256Hash.hash(transaction.toBytes(false, false)))
@@ -69,5 +78,35 @@ object Crypto
     fun verifyBytes(bytes: ByteArray, signature: ByteArray, publicKey: ByteArray): Boolean
     {
         return ECKey.verify(Sha256Hash.hash(bytes), signature, publicKey)
+    }
+
+    fun createVote(votes: List<String>, passphrase: String, secondPassphrase: String? = null): Transaction
+    {
+        val transaction = Transaction(type = 3, amount = 0, fee = 100000000)
+        transaction.asset.votes = votes
+        return processTransaction(transaction, passphrase)
+    }
+
+    fun createDelegate(username: String, passphrase: String, secondPassphrase: String? = null): Transaction
+    {
+        val transaction = Transaction(type = 2, amount = 0, fee = 2500000000)
+        transaction.asset.username = username
+        return processTransaction(transaction, passphrase)
+    }
+
+    fun createSecondSignature(passphrase: String, secondPassphrase: String): Transaction
+    {
+        val transaction = Transaction(type = 2, amount = 0, fee = 2500000000)
+        transaction.asset.signature = base16Encode(Crypto.getKeys(secondPassphrase)!!.pubKey)
+        return processTransaction(transaction, passphrase, secondPassphrase)
+    }
+
+    private fun processTransaction(transaction: Transaction, passphrase: String, secondPassphrase: String? = null) : Transaction
+    {
+        transaction.timestamp = Slot.getTime()
+        transaction.sign(passphrase)
+        secondPassphrase?.let { transaction.secondSign(it) }
+        transaction.id = Crypto.getId(transaction)
+        return transaction
     }
 }
