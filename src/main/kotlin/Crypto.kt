@@ -17,9 +17,9 @@ object Crypto
         return signBytes(transaction.toBytes(), passphrase)
     }
 
-    fun secondSign(transaction: Transaction, passphrase: String): ECKey.ECDSASignature?
+    fun secondSign(transaction: Transaction, secondPassphrase: String): ECKey.ECDSASignature?
     {
-        return signBytes(transaction.toBytes(skipSignature = false), passphrase)
+        return signBytes(transaction.toBytes(skipSignature = false), secondPassphrase)
     }
 
     fun getKeys(passphrase: String): ECKey?
@@ -58,6 +58,11 @@ object Crypto
         return base16Encode(Sha256Hash.hash(transaction.toBytes(false, false)))
     }
 
+    fun getAddress(ECKey: ECKey?): String
+    {
+        return getAddress(ECKey!!.pubKey)
+    }
+
     fun getAddress(publicKey: ByteArray): String
     {
         val out = ByteArray(20)
@@ -84,6 +89,7 @@ object Crypto
     {
         val transaction = Transaction(type = 3, amount = 0, fee = 100000000)
         transaction.asset.votes = votes
+        transaction.recipientId = Crypto.getAddress(Crypto.getKeys(passphrase))
         return processTransaction(transaction, passphrase)
     }
 
@@ -109,4 +115,5 @@ object Crypto
         transaction.id = Crypto.getId(transaction)
         return transaction
     }
+
 }

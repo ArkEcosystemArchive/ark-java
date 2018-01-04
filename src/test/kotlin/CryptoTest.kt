@@ -14,14 +14,14 @@ object CryptoTest: Spek({
 
             it("Should generate address 'AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC' on Mainnet")
             {
-                val address = Crypto.getAddress(Crypto.getKeys(passphrase)!!.pubKey)
+                val address = Crypto.getAddress(Crypto.getKeys(passphrase))
                 assertEquals("AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC", address)
             }
 
             it("Should generate address 'D61mfSggzbvQgTUe6JhYKH2doHaqJ3Dyib' on Devnet")
             {
                 Crypto.network = NetworkConstants.devnet
-                val address = Crypto.getAddress(Crypto.getKeys(passphrase)!!.pubKey)
+                val address = Crypto.getAddress(Crypto.getKeys(passphrase))
                 assertEquals("D61mfSggzbvQgTUe6JhYKH2doHaqJ3Dyib", address)
             }
         }
@@ -38,6 +38,7 @@ object CryptoTest: Spek({
 
             val transactionDelegate = Crypto.createDelegate("polopolo",
                     "this is a top secret passphrase")
+
 
             it("should verify if normal transaction")
             {
@@ -75,6 +76,27 @@ object CryptoTest: Spek({
             it("should serialize/deserialize to JSON")
             {
                 assertEquals(transactionNormal, Crypto.fromJson(transactionNormal.toJson().toString()))
+            }
+
+            on("with Second Signature")
+            {
+                val secondPassphrase = "second passphrase"
+                val secondSignTransaction = Crypto.createSecondSignature(secondPassphrase, "first passphrase")
+
+                it("should verify")
+                {
+                    assert(Crypto.verify(secondSignTransaction))
+                }
+
+                it("should have null signSignature")
+                {
+                    assert(secondSignTransaction.signSignature == null)
+                }
+
+                it("should have the correct encode public key")
+                {
+                    assertEquals(Crypto.base16Encode(Crypto.getKeys(secondPassphrase)!!.pubKey) ,secondSignTransaction.asset.signature)
+                }
             }
         }
     }
