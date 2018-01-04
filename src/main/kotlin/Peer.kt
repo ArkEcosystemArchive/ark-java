@@ -7,7 +7,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlin.reflect.KFunction2
 
-class Peer(peerInfo: String, private val headers: Map<String, Any>)
+class Peer(val ip: String, val port: Int, val network: Network)
 {
     private var protocol: String = "http://"
     private var status: String = "NEW"
@@ -15,14 +15,15 @@ class Peer(peerInfo: String, private val headers: Map<String, Any>)
 
     init
     {
-        val data = peerInfo.split(':')
-        val ip: String = data[0]
-        val port: Int = data[1].toInt()
-
         if (port % 1000 == 443) protocol = "https://"
-
         peerURL = "$protocol$ip$port"
     }
+
+    constructor(peerInfo: Array<String>, network: Network) : this(
+            ip = peerInfo[0],
+            port = peerInfo[1].toInt(),
+            network = network
+    )
 
     private fun request(
             path: String,
@@ -30,8 +31,10 @@ class Peer(peerInfo: String, private val headers: Map<String, Any>)
             method: KFunction2<String, @ParameterName(name = "parameters") List<Pair<String, Any?>>?, Request>): Request
     {
         return method(path, parameters)
-                .header(headers)
+                .header(network.getHeaders())
     }
+
+    fun isOk() = getStatus().success
 
     fun getStatus(): PeerData
     {
@@ -52,18 +55,18 @@ class Peer(peerInfo: String, private val headers: Map<String, Any>)
         return peerInfo!!
     }
 
-    fun postTransaction(transaction: Transaction): TransactionData?
+    fun postTransaction(transaction: Transaction): TransactionPostResponse?
     {
         val jsonArray = JsonArray()
         val jsonObject = JsonObject()
-        var transactionData: TransactionData? = null
+        var transactionData: TransactionPostResponse? = null
 
         jsonArray.add(transaction.toJson())
         jsonObject.add("transactions", jsonArray)
 
         request(path = "/peer/transactions", method = String::httpPost)
                 .body(jsonObject.toString())
-                .responseObject(moshiDeserializerOf<TransactionData>()) { _, _, result ->
+                .responseObject(moshiDeserializerOf<TransactionPostResponse>()) { _, _, result ->
                     when(result)
                     {
                         is Result.Success ->
@@ -75,5 +78,22 @@ class Peer(peerInfo: String, private val headers: Map<String, Any>)
                 }
 
         return transactionData
+    }
+
+    fun getTransactions(account: Account, amount: Int): TransactionList
+    {
+        var transactions: TransactionList? = null
+
+        request(path = "/api/transactions",
+                method = String::httpGet,
+                parameters = listOf("recipientId" to account.address, "senderId" to account.address, "limit" to amount))
+                .responseObject(moshiDeserializerOf<TransactionList>()) { _, _, result ->
+                    when(result)
+                    {
+                        is Result.Success -> transactions = result.component1()!!
+                    }
+                }
+
+        return transactions!!
     }
 }

@@ -1,3 +1,5 @@
+import java.util.*
+
 data class PeerData(
         val success: Boolean,
         val height: Int,
@@ -22,6 +24,34 @@ data class Header(
         val blockSignature: String
 )
 
-data class TransactionData(
-        val id: Long
+data class TransactionPostResponse(
+        val success: Boolean,
+        val message: String,
+        val error: String
 )
+
+data class TransactionList(
+        val success: Boolean,
+        val transactions: Array<Transaction>
+)
+{
+    override fun equals(other: Any?): Boolean
+    {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as TransactionList
+
+        if (success != other.success) return false
+        if (!Arrays.equals(transactions, other.transactions)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int
+    {
+        var result = success.hashCode()
+        result = 31 * result + Arrays.hashCode(transactions)
+        return result
+    }
+}

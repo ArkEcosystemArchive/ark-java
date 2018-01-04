@@ -1,9 +1,12 @@
 data class Account(var address: String?,
+                   var unconfirmedBalance: Long,
                    var publicKey: String?,
                    var username: String?,
                    var balance: Long = 0,
                    var vote: Long?,
-                   var votes: List<Long>?)
+                   var votes: List<Long>?,
+                   var network: Network,
+                   var updateTimestamp: Long)
 {
     fun applyTransaction(transaction: Transaction): Boolean
     {
@@ -23,6 +26,11 @@ data class Account(var address: String?,
              "Account $address does not have enough balance: $balance"
 
         return Verification()
+    }
+
+    fun updateBalance()
+    {
+
     }
 }
 
