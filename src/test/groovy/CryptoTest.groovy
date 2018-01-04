@@ -39,6 +39,13 @@ class CryptoTest extends Specification {
           tx == Transaction.fromJson(tx.toJson())
     }
 
+    def "Verify signatures on second signature transaction"() {
+        when:
+          def signatureTx = Transaction.createSecondSignature("second passphrase", "first passphrase")
+        then:
+          Crypto.verify(signatureTx) && signatureTx.signSignature == null && signatureTx.asset?.get("signature")?.get("publicKey") ==  BaseEncoding.base16().lowerCase().encode(Crypto.getKeys("second passphrase").getPubKey())
+    }
+
     def "Transaction with second passphrase should create and verify"() {
         when:
           def tx = Transaction.createTransaction("AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25", 133380000000, "This is first transaction from JAVA", "this is a top secret passphrase", "this is a top secret second passphrase")
