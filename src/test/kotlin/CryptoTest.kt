@@ -10,14 +10,19 @@ object CryptoTest: Spek({
     {
         on("Passphrase 'this is a top secret passphrase'")
         {
+            val passphrase =  "this is a top secret passphrase"
+
             it("Should generate address 'AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC' on Mainnet")
             {
-
+                val address = Crypto.getAddress(Crypto.getKeys(passphrase)!!.pubKey)
+                assertEquals("AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC", address)
             }
 
             it("Should generate address 'D61mfSggzbvQgTUe6JhYKH2doHaqJ3Dyib' on Devnet")
             {
-
+                Crypto.network = NetworkConstants.devnet
+                val address = Crypto.getAddress(Crypto.getKeys(passphrase)!!.pubKey)
+                assertEquals("D61mfSggzbvQgTUe6JhYKH2doHaqJ3Dyib", address)
             }
         }
 
@@ -69,7 +74,7 @@ object CryptoTest: Spek({
 
             it("should serialize/deserialize to JSON")
             {
-               assertEquals(transactionNormal, Crypto.fromJson(transactionNormal.toJson().toString()))
+                assertEquals(transactionNormal, Crypto.fromJson(transactionNormal.toJson().toString()))
             }
         }
     }

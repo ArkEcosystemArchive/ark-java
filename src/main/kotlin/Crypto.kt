@@ -6,7 +6,7 @@ import org.spongycastle.crypto.digests.RIPEMD160Digest
 
 object Crypto
 {
-    val networkVersion = 0x17
+    var network = NetworkConstants.mainnet
 
     fun base16Encode(bytes: ByteArray) = BaseEncoding.base16().lowerCase().encode(bytes)!!
     fun base16Decode(chars: String) = BaseEncoding.base16().lowerCase().decode(chars)!!
@@ -60,14 +60,14 @@ object Crypto
 
     fun getAddress(publicKey: ByteArray): String
     {
-        val out = byteArrayOf(20)
+        val out = ByteArray(20)
 
         var digest = RIPEMD160Digest().apply {
             update(publicKey, 0, publicKey.size)
             doFinal(out, 0)
         }
 
-        return ArkAddress(NetworkConstants.mainnet, out).toBase58()
+        return ArkAddress(network, out).toBase58()
     }
 
     fun signBytes(bytes: ByteArray, passphrase: String): ECKey.ECDSASignature?
