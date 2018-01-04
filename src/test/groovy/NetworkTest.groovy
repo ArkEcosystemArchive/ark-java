@@ -41,6 +41,7 @@ class NetworkTest extends Specification {
         success
     }
 
+    // TODO: stub
     def "Should connect to Mainnet"(){
       setup:
         def peer = mainnet.randomPeer
@@ -50,6 +51,7 @@ class NetworkTest extends Specification {
         status.currentSlot > status.height
     }
 
+    // TODO: stub
     def "Should connect to Devnet"(){
       setup:
         def peer = devnet.randomPeer
@@ -59,6 +61,7 @@ class NetworkTest extends Specification {
         status.currentSlot > status.height
     }
 
+    // TODO: stub
     def "Should post a transaction to a Mainnet Peer"(){
       setup:
         def peer = mainnet.randomPeer
@@ -69,6 +72,18 @@ class NetworkTest extends Specification {
         result.error == "Account does not have enough ARK: AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC balance: 0"
     }
 
+    // TODO: stub
+    def "Should post a vote transaction to a Mainnet Peer"(){
+      setup:
+      def peer = mainnet.randomPeer
+      when:
+      def transaction = Transaction.createVote(["+123456789"], "this is a top secret passphrase")
+      def result = peer << transaction
+      then:
+      result.error == "Account does not have enough ARK: AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC balance: 0"
+    }
+
+    // TODO: stub
     def "Should broadcast a transaction to Mainnet"(){
       when:
         def transaction = Transaction.createTransaction("AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25", 133380000000, "This is first transaction from JAVA", "this is a top secret passphrase")
@@ -77,6 +92,7 @@ class NetworkTest extends Specification {
         result == mainnet.broadcastMax
     }
 
+    // TODO: stub
     def "Should Get transactions associated with an Account"(){
         setup:
         def peer = mainnet.randomPeer
@@ -89,6 +105,7 @@ class NetworkTest extends Specification {
         (result.get("transactions") as List).size() == 2
     }
 
+    // TODO: stub
     def "Should only return one transaction from an Account"(){
         setup:
         def peer = mainnet.randomPeer
@@ -101,6 +118,7 @@ class NetworkTest extends Specification {
         (result.get("transactions") as List).size() == 1
     }
 
+    // TODO: stub
     def "Should be able to fetch a list of peers"(){
         setup:
         def peer = mainnet.randomPeer
@@ -111,6 +129,7 @@ class NetworkTest extends Specification {
         (result.get("peers") as List).size() > 0
     }
 
+    // TODO: stub
     def "Should be able to fetch a list of delegates"(){
         setup:
         def peer = mainnet.randomPeer

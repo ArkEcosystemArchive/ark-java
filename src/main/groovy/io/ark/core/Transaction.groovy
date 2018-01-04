@@ -136,9 +136,10 @@ class Transaction extends Object {
     return tx
   }
 
-  static Transaction createVote(ArrayList votes, String passphrase, String secondPassphrase = null){
+  static Transaction createVote(List votes, String passphrase, String secondPassphrase = null){
     def tx = new Transaction(type:TransactionType.VOTE, amount:0, fee:100000000)
     tx.asset.votes = votes
+    tx.recipientId = Crypto.getAddress(Crypto.getKeys(passphrase))
     tx.timestamp = Slot.getTime()
     tx.sign(passphrase)
     if(secondPassphrase)
