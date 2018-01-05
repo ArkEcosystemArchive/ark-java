@@ -1,11 +1,27 @@
 import java.util.*
 
-data class PeerData(
+data class PeerStatus(
         val success: Boolean,
         val height: Int,
         val forgingAllowed: Boolean,
         val currentSlot: Int,
         val header: Header
+)
+
+data class PeerData(
+       val ip: String,
+       val port: Int,
+       val version: String,
+       val errors: Int,
+       val os: String,
+       val height: Int,
+       val status: String,
+       val delay: Int
+)
+
+data class PeerList(
+        val success: Boolean,
+        var peers: Array<PeerData>
 )
 
 data class Header(
@@ -34,24 +50,3 @@ data class TransactionList(
         val success: Boolean,
         val transactions: Array<Transaction>
 )
-{
-    override fun equals(other: Any?): Boolean
-    {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as TransactionList
-
-        if (success != other.success) return false
-        if (!Arrays.equals(transactions, other.transactions)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int
-    {
-        var result = success.hashCode()
-        result = 31 * result + Arrays.hashCode(transactions)
-        return result
-    }
-}

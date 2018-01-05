@@ -1,3 +1,6 @@
+import HttpRequest.getFreshPeersFromUrl
+import com.github.kittinunf.fuel.core.Request
+import kotlin.reflect.KFunction2
 import java.util.*
 
 data class Network(
@@ -13,7 +16,7 @@ data class Network(
 {
     private val random = Random()
     private val localhost = "127.0.0.1"
-    private val defaultTimeout = 30000L
+    private val defaultTimeout = 30000
 
     fun getHeaders(): Map<String, Any>
     {
@@ -27,35 +30,66 @@ data class Network(
     {
         if (peers.isNotEmpty()) return false
 
-        getFreshPeers(numberOfPeers).forEach { verifyAndAddFreshPeer(it) }
+        getFreshPeers(numberOfPeers).peers.forEach { verifyAndAddFreshPeer() }
 
+        for(peer in getFreshPeers(numberOfPeers).peers)
+        {
+            verifyAndAddFreshPeer(peer)
+        }
+
+        if (peers.isEmpty())
+        {
+            fallBackToPeerSeed()
+        }
 
         return true
     }
 
-    //TODO: Returns a JSONRESPONSE
-    fun getFreshPeers(limitResults: Int, timeout: Long = defaultTimeout): List<Peer>
+    fun fallBackToPeerSeed()
     {
-        Collections.shuffle(peerListProviders)
+        val limit = if (numberOfPeers < peerseed!!.size) numberOfPeers else peerseed!!.size
 
-        for(url in peerListProviders)
+        for(peerseed in peerseed!!.subList(0, limit))
         {
-            val result = getFreshPeersFromUrl(url, limitResults, timeout)
-
+            verifyAndAddSeedPeer(peerseed)
         }
     }
 
-    //TODO: Returns a JSONRESPONSE
-    fun getFreshPeersFromUrl(url: String, limitResults: Int, timeout: Long): List<Peer>
+    fun getFreshPeers(limitResults: Int, timeout: Int = defaultTimeout): PeerList
     {
+        //Used to store return
+        var resultList: PeerList?
 
+        //Shuffle the list of peer providers
+        Collections.shuffle(peerListProviders)
+
+        // Iterate through each provider until a successful list of peers is retrieved
+        val urlList = peerListProviders.listIterator()
+
+        do
+        {
+            //Fetch the list of peers for the next provider
+            resultList = getFreshPeersFromUrl(urlList.next(), limitResults, timeout)
+        }while ((resultList == null || !resultList.success) && urlList.hasNext())
+
+        return resultList!!
     }
 
-    fun verifyAndAddFreshPeer(freshPeer: Peer, localHostAllowed: Boolean = false)
+    fun verifyAndAddSeedPeer(peerInfo: String)
+    {
+        val peer = Peer(peerInfo.split(":"), this)
+
+        if (peer.isOk())
+        {
+            peers.add(peer)
+        }
+    }
+
+    fun verifyAndAddFreshPeer(freshPeer: PeerData, localHostAllowed: Boolean = false)
     {
         val peer = Peer(freshPeer.ip, freshPeer.port, this)
 
-        // If the ip isnt localhost or if localhost is allowed
+        // If the ip isn't localhost or if localhost is allowed
         if(localHostAllowed or (!localHostAllowed and (peer.ip == localhost)))
         {
             // Check if the peer's status is OK
@@ -80,4 +114,15 @@ data class Network(
     {
         return peers[random.nextInt(peers.size)]
     }
+
+    /**
+     * Forwards requests to the HttpRequest object while injecting a random peer's url into the path
+     * Only the [endpoint] path is required to access the ark node's API. ex. "/peer/transactions/"
+     * [method] and [parameters] remain fully configurable as seen in the parent function in the HttpRequest object
+     */
+    fun request(
+            endpoint: String,
+            parameters: List<Pair<String, Any?>>? = null,
+            method: KFunction2<String, @ParameterName(name = "parameters") List<Pair<String, Any?>>?, Request>)
+            = HttpRequest.request(getRandomPeer().peerURL + endpoint, parameters, method)
 }

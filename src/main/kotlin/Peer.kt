@@ -2,7 +2,7 @@ class Peer(val ip: String, val port: Int, val network: Network)
 {
     private var protocol: String = "http://"
     private var status: String = "NEW"
-    private var peerURL: String = ""
+    var peerURL: String = ""
 
     init
     {
@@ -10,7 +10,7 @@ class Peer(val ip: String, val port: Int, val network: Network)
         peerURL = "$protocol$ip$port"
     }
 
-    constructor(peerInfo: Array<String>, network: Network) : this(
+    constructor(peerInfo: List<String>, network: Network) : this(
             ip = peerInfo[0],
             port = peerInfo[1].toInt(),
             network = network
@@ -18,11 +18,11 @@ class Peer(val ip: String, val port: Int, val network: Network)
 
     fun isOk() = getStatus().success
 
-    fun getStatus() = HttpRequest.getStatus(peerURL, network)
+    fun getStatus() = HttpRequest.getStatus(this)
 
     fun postTransaction(transaction: Transaction) =
-            HttpRequest.postTransaction(peerURL, network, transaction)
+            HttpRequest.postTransaction(this, transaction)
 
     fun getTransactions(account: Account, amount: Int) =
-            HttpRequest.getTransactions(peerURL, network, account, amount)
+            HttpRequest.getTransactions(this, account, amount)
 }

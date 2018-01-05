@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.github.kittinunf.result.Result
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import java.util.*
 import kotlin.reflect.KFunction2
 
 object HttpRequest
@@ -22,13 +23,13 @@ object HttpRequest
         return method(path, parameters)
     }
 
-    fun getStatus(peerURL: String, network: Network): PeerData
+    fun getStatus(peer: Peer): PeerStatus
     {
-        var peerInfo: PeerData? = null
+        var peerInfo: PeerStatus? = null
 
-        request(path = "$peerURL/peer/status", method = String::httpGet)
-                .header(network.getHeaders())
-                .responseObject(moshiDeserializerOf<PeerData>()) { _, _, result ->
+        request(path = "${peer.peerURL}/peer/status", method = String::httpGet)
+                .header(peer.network.getHeaders())
+                .responseObject(moshiDeserializerOf<PeerStatus>()) { _, _, result ->
                     when(result)
                     {
                         is Result.Success ->
@@ -41,7 +42,7 @@ object HttpRequest
         return peerInfo!!
     }
 
-    fun postTransaction(peerURL: String, network: Network, transaction: Transaction): TransactionPostResponse?
+    fun postTransaction(peer: Peer, transaction: Transaction): TransactionPostResponse
     {
         val jsonArray = JsonArray()
         val jsonObject = JsonObject()
@@ -50,8 +51,8 @@ object HttpRequest
         jsonArray.add(transaction.toJson())
         jsonObject.add("transactions", jsonArray)
 
-        request(path = "$peerURL/peer/transactions", method = String::httpPost)
-                .header(network.getHeaders())
+        request(path = "${peer.peerURL}/peer/transactions", method = String::httpPost)
+                .header(peer.network.getHeaders())
                 .body(jsonObject.toString())
                 .responseObject(moshiDeserializerOf<TransactionPostResponse>()) { _, _, result ->
                     when(result)
@@ -63,17 +64,17 @@ object HttpRequest
                     }
                 }
 
-        return transactionData
+        return transactionData!!
     }
 
-    fun getTransactions(peerURL: String, network: Network, account: Account, amount: Int): TransactionList
+    fun getTransactions(peer: Peer, account: Account, amount: Int): TransactionList
     {
         var transactions: TransactionList? = null
 
-        request(path = "$peerURL/api/transactions",
+        request(path = "${peer.peerURL}/api/transactions",
                 method = String::httpGet,
                 parameters = listOf("recipientId" to account.address, "senderId" to account.address, "limit" to amount))
-                .header(network.getHeaders())
+                .header(peer.network.getHeaders())
                 .responseObject(moshiDeserializerOf<TransactionList>()) { _, _, result ->
                     when(result)
                     {
@@ -82,5 +83,28 @@ object HttpRequest
                 }
 
         return transactions!!
+    }
+
+    fun getFreshPeersFromUrl(url: String, limitResults: Int, timeout: Int): PeerList
+    {
+        var peerList: PeerList? = null
+
+        request(path = "$url/api/peers",
+                method = String::httpGet)
+                .timeout(timeout)
+                .responseObject(moshiDeserializerOf<PeerList>()) { _, _, result ->
+                    when(result)
+                    {
+                        is Result.Success -> peerList = result.component1()!!
+                    }
+                }
+
+        //Sort the array by the peers delay
+        Arrays.sort(peerList!!.peers, compareBy({it.delay}))
+
+        //Remove results over the provided limit
+        peerList!!.peers = peerList!!.peers.sliceArray(0..limitResults)
+
+        return peerList!!
     }
 }
