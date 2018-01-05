@@ -15,7 +15,7 @@ class NetworkTest extends Specification {
     @Shared mainnet = Network.Mainnet
     @Shared devnet = Network.Devnet
 
-    def setupSpec()
+    def setup()
     {
         mainnet.warmup()
         devnet.warmup()
