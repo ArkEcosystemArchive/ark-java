@@ -16,9 +16,9 @@ class Peer(val ip: String, val port: Int, val network: Network)
             network = network
     )
 
-    fun isOk() = getStatus().success
+    suspend fun isOk() = getStatus().success
 
-    fun getStatus() = HttpRequest.getStatus(this)
+    suspend fun getStatus() = HttpRequest.getStatus(this).await()
 
     fun postTransaction(transaction: Transaction) =
             HttpRequest.postTransaction(this, transaction)

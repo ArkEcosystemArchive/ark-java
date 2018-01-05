@@ -5,10 +5,8 @@ buildscript {
     }
 }
 
-// Apply the groovy plugin to add support for Groovy
 plugins {
     id 'maven'
-    id 'groovy'
     id "org.jetbrains.kotlin.jvm" version "1.1.51"
 }
 
@@ -34,11 +32,9 @@ model {
     }
 }
 
-sourceSets {
-    example {
-        groovy {
-            srcDir 'example'
-        }
+kotlin {
+    experimental {
+        coroutines "enable"
     }
 }
 
@@ -64,6 +60,7 @@ dependencies {
     //Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.51"
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
     compileClasspath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
 
     compile 'com.github.kittinunf.fuel:fuel-moshi:1.12.0'
@@ -84,9 +81,6 @@ dependencies {
     //Testing
     testCompile 'org.jetbrains.spek:spek-api:1.1.5'
     testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.1.5'
-
-    //Legacy Testing TODO: Remove after test suite is complete
-    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'junit:junit:4.11'
 }
 
@@ -105,3 +99,4 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+

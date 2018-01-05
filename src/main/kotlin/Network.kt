@@ -1,5 +1,6 @@
 import HttpRequest.getFreshPeersFromUrl
 import com.github.kittinunf.fuel.core.Request
+import kotlinx.coroutines.experimental.async
 import kotlin.reflect.KFunction2
 import java.util.*
 
@@ -26,11 +27,9 @@ data class Network(
                 "port" to port)
     }
 
-    fun warmup(numberOfPeers: Int): Boolean
+    suspend fun warmup(numberOfPeers: Int = 20): Boolean
     {
         if (peers.isNotEmpty()) return false
-
-        getFreshPeers(numberOfPeers).peers.forEach { verifyAndAddFreshPeer() }
 
         for(peer in getFreshPeers(numberOfPeers).peers)
         {
@@ -39,13 +38,13 @@ data class Network(
 
         if (peers.isEmpty())
         {
-            fallBackToPeerSeed()
+            fallBackToPeerSeed(numberOfPeers)
         }
 
         return true
     }
 
-    fun fallBackToPeerSeed()
+    fun fallBackToPeerSeed(numberOfPeers: Int)
     {
         val limit = if (numberOfPeers < peerseed!!.size) numberOfPeers else peerseed!!.size
 
@@ -55,7 +54,7 @@ data class Network(
         }
     }
 
-    fun getFreshPeers(limitResults: Int, timeout: Int = defaultTimeout): PeerList
+    suspend fun getFreshPeers(limitResults: Int, timeout: Int = defaultTimeout): PeerList
     {
         //Used to store return
         var resultList: PeerList?
@@ -69,19 +68,27 @@ data class Network(
         do
         {
             //Fetch the list of peers for the next provider
-            resultList = getFreshPeersFromUrl(urlList.next(), limitResults, timeout)
+            resultList = getFreshPeersFromUrl(urlList.next(), timeout).await()
         }while ((resultList == null || !resultList.success) && urlList.hasNext())
 
-        return resultList!!
+        //Sort the array by the peers delay
+        Arrays.sort(resultList!!.peers, compareBy({it.delay}))
+
+        //Remove results over the provided limit
+        resultList.peers = resultList.peers.sliceArray(0..limitResults)
+
+        return resultList
     }
 
     fun verifyAndAddSeedPeer(peerInfo: String)
     {
         val peer = Peer(peerInfo.split(":"), this)
 
-        if (peer.isOk())
-        {
-            peers.add(peer)
+        async {
+            if (peer.isOk())
+            {
+                peers.add(peer)
+            }
         }
     }
 
@@ -93,9 +100,11 @@ data class Network(
         if(localHostAllowed or (!localHostAllowed and (peer.ip == localhost)))
         {
             // Check if the peer's status is OK
-            if (peer.isOk())
-            {
-                peers.add(peer)
+            async {
+                if (peer.isOk())
+                {
+                    peers.add(peer)
+                }
             }
         }
     }
@@ -120,7 +129,7 @@ data class Network(
      * Only the [endpoint] path is required to access the ark node's API. ex. "/peer/transactions/"
      * [method] and [parameters] remain fully configurable as seen in the parent function in the HttpRequest object
      */
-    fun request(
+    suspend fun request(
             endpoint: String,
             parameters: List<Pair<String, Any?>>? = null,
             method: KFunction2<String, @ParameterName(name = "parameters") List<Pair<String, Any?>>?, Request>)
