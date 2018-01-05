@@ -14,9 +14,9 @@ class Crypto {
     signBytes(txbytes, passphrase)
   }
 
-  static ECKey.ECDSASignature secondSign(Transaction t, String passphrase){
+  static ECKey.ECDSASignature secondSign(Transaction t, String secondPassphrase){
     byte[] txbytes = getBytes(t, false)
-    signBytes(txbytes, passphrase)
+    signBytes(txbytes, secondPassphrase)
   }
 
   static ECKey.ECDSASignature signBytes(byte[] bytes, String passphrase){

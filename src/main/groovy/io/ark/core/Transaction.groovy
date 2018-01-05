@@ -7,7 +7,15 @@ import org.bitcoinj.core.*
 import groovy.transform.*
 
 enum TransactionType {
-  NORMAL(0), SECONDSIGNITURE(1), DELEGATE(2), VOTE(3)
+  NORMAL(0),
+  SECONDSIGNATURE(1),
+  DELEGATE(2),
+  VOTE(3),
+
+  /**
+   * @deprecated use SECONDSIGNATURE
+   */
+  @Deprecated SECONDSIGNITURE(1)
 
   private final int value
 
@@ -76,8 +84,8 @@ class Transaction extends Object {
     buffer.putLong amount
     buffer.putLong fee
 
-    if(type == TransactionType.SECONDSIGNITURE){
-      buffer.put BaseEncoding.base16().lowerCase().decode(asset.signature)
+    if(type == TransactionType.SECONDSIGNITURE || type == TransactionType.SECONDSIGNATURE){
+      buffer.put BaseEncoding.base16().lowerCase().decode(asset?.get("signature")?.get("publicKey"))
     }
     else if(type == TransactionType.DELEGATE){
       buffer.put asset.username.bytes
@@ -136,9 +144,10 @@ class Transaction extends Object {
     return tx
   }
 
-  static Transaction createVote(ArrayList votes, String passphrase, String secondPassphrase = null){
+  static Transaction createVote(List votes, String passphrase, String secondPassphrase = null){
     def tx = new Transaction(type:TransactionType.VOTE, amount:0, fee:100000000)
     tx.asset.votes = votes
+    tx.recipientId = Crypto.getAddress(Crypto.getKeys(passphrase))
     tx.timestamp = Slot.getTime()
     tx.sign(passphrase)
     if(secondPassphrase)
@@ -159,8 +168,8 @@ class Transaction extends Object {
   }
 
   static Transaction createSecondSignature(String secondPassphrase, String passphrase){
-    def tx = new Transaction(type:TransactionType.SECONDSIGNITURE, amount:0, fee:500000000)
-    tx.asset.signature = BaseEncoding.base16().lowerCase().encode(Crypto.getKeys(secondPassphrase).getPubKey())
+    def tx = new Transaction(type:TransactionType.SECONDSIGNATURE, amount:0, fee:500000000)
+    tx.asset.signature = [publicKey:BaseEncoding.base16().lowerCase().encode(Crypto.getKeys(secondPassphrase).getPubKey())]
     tx.timestamp = Slot.getTime()
     tx.sign(passphrase)
     tx.id = Crypto.getId(tx)
