@@ -1,6 +1,7 @@
 import HttpRequest.getFreshPeersFromUrl
 import com.github.kittinunf.fuel.core.Request
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
 import kotlin.reflect.KFunction2
 import java.util.*
 
@@ -84,7 +85,7 @@ data class Network(
     {
         val peer = Peer(peerInfo.split(":"), this)
 
-        async {
+        runBlocking {
             if (peer.isOk())
             {
                 peers.add(peer)
@@ -100,7 +101,7 @@ data class Network(
         if(localHostAllowed or (!localHostAllowed and (peer.ip == localhost)))
         {
             // Check if the peer's status is OK
-            async {
+            runBlocking {
                 if (peer.isOk())
                 {
                     peers.add(peer)
@@ -119,7 +120,7 @@ data class Network(
         return broadcastMax
     }
 
-    private fun getRandomPeer(): Peer
+    fun getRandomPeer(): Peer
     {
         return peers[random.nextInt(peers.size)]
     }

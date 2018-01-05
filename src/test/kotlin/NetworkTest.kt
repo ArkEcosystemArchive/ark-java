@@ -1,4 +1,5 @@
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
@@ -8,15 +9,23 @@ object NetworkTest: Spek({
     given("A random mainnet peer")
     {
         val mainnet = NetworkConstants.mainnet
-        async {
+        runBlocking {
             mainnet.warmup(2)
         }
 
+        val peer = mainnet.getRandomPeer()
+
         on("getStatus query")
         {
+            var status: PeerStatus? = null
+
+            runBlocking {
+                status = peer.getStatus()
+            }
+
             it("should return a currentSlot higher than it's status")
             {
-
+                assert(status!!.currentSlot > status!!.height)
             }
         }
 
@@ -40,7 +49,7 @@ object NetworkTest: Spek({
     given("A random devnet peer")
     {
         val devnet = NetworkConstants.devnet
-        async {
+        runBlocking {
             devnet.warmup(2)
         }
 

@@ -7,7 +7,7 @@ class Peer(val ip: String, val port: Int, val network: Network)
     init
     {
         if (port % 1000 == 443) protocol = "https://"
-        peerURL = "$protocol$ip$port"
+        peerURL = "$protocol$ip:$port"
     }
 
     constructor(peerInfo: List<String>, network: Network) : this(
