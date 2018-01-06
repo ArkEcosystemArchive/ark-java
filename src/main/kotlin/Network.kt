@@ -1,6 +1,5 @@
 import HttpRequest.getFreshPeersFromUrl
 import com.github.kittinunf.fuel.core.Request
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import kotlin.reflect.KFunction2
 import java.util.*
@@ -32,9 +31,14 @@ data class Network(
     {
         if (peers.isNotEmpty()) return false
 
-        for(peer in getFreshPeers(numberOfPeers).peers)
+        val freshPeers = getFreshPeers(numberOfPeers)?.peers
+
+        if (freshPeers != null)
         {
-            verifyAndAddFreshPeer(peer)
+            for(peer in freshPeers)
+            {
+                verifyAndAddFreshPeer(peer)
+            }
         }
 
         if (peers.isEmpty())
@@ -55,28 +59,32 @@ data class Network(
         }
     }
 
-    suspend fun getFreshPeers(limitResults: Int, timeout: Int = defaultTimeout): PeerList
+    fun getFreshPeers(limitResults: Int, timeout: Int = defaultTimeout): PeerList?
     {
+        if (peerListProviders.isEmpty()) return null
+
         //Used to store return
-        var resultList: PeerList?
+        var resultList: PeerList? = null
 
         //Shuffle the list of peer providers
         Collections.shuffle(peerListProviders)
 
         // Iterate through each provider until a successful list of peers is retrieved
-        val urlList = peerListProviders.listIterator()
+        val urlList = peerListProviders.iterator()
 
         do
         {
             //Fetch the list of peers for the next provider
-            resultList = getFreshPeersFromUrl(urlList.next(), timeout).await()
-        }while ((resultList == null || !resultList.success) && urlList.hasNext())
+            runBlocking {
+                resultList = getFreshPeersFromUrl(urlList.next(), timeout).await()
+            }
+        }while ((resultList == null || !resultList!!.success) && urlList.hasNext())
 
         //Sort the array by the peers delay
         Arrays.sort(resultList!!.peers, compareBy({it.delay}))
 
         //Remove results over the provided limit
-        resultList.peers = resultList.peers.sliceArray(0..limitResults)
+        resultList!!.peers = resultList!!.peers.sliceArray(0..limitResults)
 
         return resultList
     }

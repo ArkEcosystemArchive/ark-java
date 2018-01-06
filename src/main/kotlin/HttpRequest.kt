@@ -38,15 +38,19 @@ object HttpRequest
 
     fun postTransaction(peer: Peer, transaction: Transaction): Deferred<TransactionPostResponse>
     {
-        val jsonArray = JsonArray()
+        val transactionArray = JsonArray()
         val jsonObject = JsonObject()
 
-        jsonArray.add(transaction.toJson())
-        jsonObject.add("transactions", jsonArray)
+        transactionArray.add(transaction.toJson())
+        jsonObject.add("transactions", transactionArray)
+
+        print(jsonObject.toString())
 
         return async {
             val tripleResponse = request(path = "${peer.peerURL}/peer/transactions", method = String::httpPost)
                     .header(peer.network.getHeaders())
+                    .header(mapOf("accept" to "application/json"))
+                    .header(mapOf("Content-Type" to "application/json"))
                     .body(jsonObject.toString())
                     .responseObject(moshiDeserializerOf<TransactionPostResponse>())
 

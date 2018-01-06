@@ -1,13 +1,13 @@
 import Crypto.base16Decode
 import Crypto.base16Encode
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import org.bitcoinj.core.Base58
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.*
 
-data class Transaction(var timestamp: Int? = null,
+data class Transaction(var id: String? = null,
+                       var timestamp: Int? = null,
                        var recipientId: String? = null,
                        var amount: Long,
                        var fee: Long,
@@ -17,12 +17,10 @@ data class Transaction(var timestamp: Int? = null,
                        var signSignature: String? = null,
                        var senderPublicKey: String? = null,
                        var requesterPublicKey: String? = null,
-                       var asset: Asset = Asset(),
-                       var id: String? = null)
+                       var asset: Asset = Asset())
 {
-    private val bufferSize = 1000
 
-    fun toJson(): JsonElement? = Gson().toJsonTree(this)
+    fun toJson(): JsonElement? = GsonBuilder().serializeNulls().create().toJsonTree(this)
 
     fun sign(passphrase: String)
     {
@@ -38,7 +36,7 @@ data class Transaction(var timestamp: Int? = null,
     fun toBytes(skipSignature: Boolean = true, skipSecondSignature: Boolean = true ): ByteArray
     {
         var output = ByteArray(0)
-        val buffer: ByteBuffer = prepareBuffer(ByteBuffer.allocate(bufferSize), skipSignature, skipSecondSignature)
+        val buffer: ByteBuffer = prepareBuffer(ByteBuffer.allocate(1000), skipSignature, skipSecondSignature)
 
         with(buffer)
         {

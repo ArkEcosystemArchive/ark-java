@@ -25,11 +25,11 @@ data class PeerList(
 )
 
 data class Header(
-        val id: Long,
+        val id: String,
         val height: Int,
         val version: Int,
-        val totalAmount: Int,
-        val totalFee: Int,
+        val totalAmount: Long,
+        val totalFee: Long,
         val reward: Long,
         val payloadHash: String,
         val payloadLength: Int,
