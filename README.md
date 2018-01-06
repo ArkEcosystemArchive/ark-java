@@ -1,69 +1,74 @@
 # ark-java
-:coffee: Lite client library in Java
 
-[ ![Download](https://api.bintray.com/packages/arkecosystem/ark-java/client/images/download.svg) ](https://bintray.com/arkecosystem/ark-java/client/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/singh/ark-io/ark-java/images/download.svg) ](https://bintray.com/singh/ark-io/ark-java/_latestVersion)
 [![Build Status](https://travis-ci.org/Guppster/ark-java.svg?branch=master)](https://travis-ci.org/Guppster/ark-java)
 
-# Installation
-## Using Java
-- Download the ```.jar``` from the Maven repository `https://dl.bintray.com/arkecosystem/ark-java/`
-- Add it to your project and `import io.ark.*`
+Library for interacting with a [Ark](Ark.io) Blockchain using the JVM.
 
-### Maven
-Add this under `<dependencies>`
-```
-<dependency>
-  <groupId>io.ark.lite</groupId>
-  <artifactId>client</artifactId>
-  <version>0.3</version>
-  <scope>compile</scope>
-</dependency>
-```
+## Installation
 
-### Gradle
-Add this line under `dependencies`
-```
-compile 'io.ark.lite:client:0.3'
-```
+#### Configure Bintray Repo
 
-See an example gradle app here: https://github.com/arkecosystem/ark-java-example
+first you need to include one of these code blocks in your build system's config file in order to find the jar
 
-## Using Groovy
-Install groovy: http://groovy-lang.org/install.html
+_build.gradle_
 
-Example:
-```
-@GrabResolver(name='ark-java', root='https://dl.bintray.com/arkecosystem/ark-java/')
-@Grab('io.ark.lite:client:0.3')
+    repositories {
+        maven {
+            url https://dl.bintray.com/singh/ark-io/
+        }
+    }
+    
+_pom.xml_
 
-import io.ark.core.*
+    <profiles>
+        <profile>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-singh-ark-io</id>
+                    <name>bintray</name>
+                    <url>https://dl.bintray.com/singh/ark-io</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-singh-ark-io</id>
+                    <name>bintray-plugins</name>
+                    <url>https://dl.bintray.com/singh/ark-io</url>
+                </pluginRepository>
+            </pluginRepositories>
+            <id>bintray</id>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>bintray</activeProfile>
+    </activeProfiles>
 
-// grab mainnet network settings and warm it up
-def mainnet = Network.Mainnet
-mainnet.warmup()
+#### Include the Dependency
 
-// create a transaction
-def transaction = Transaction.createTransaction("AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25", 133380000000, "This is first transaction from JAVA", "this is a top secret passphrase")
+##### Gradle
+    
+_build.gradle_
 
-// Post transaction to a peer
-def peer = mainnet.randomPeer
-println peer << transaction
+    compile 'io.ark:ark-java:1.0.0'
 
-// broadcast transaction to several peers on mainnet
-println mainnet << transaction
-```
+##### Maven
 
-Run the example Groovy code by doing:
-`groovy example/Example.groovy`
+_pom.xml_
 
-# License
+    <dependency>
+        <groupId>io.ark</groupId>
+        <artifactId>ark-java</artifactId>
+        <version>1.0.0</version>
+        <type>pom</type>
+    </dependency>
 
-The MIT License (MIT)
+## Contributing
 
-Copyright (c) 2017 Ark
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Contributions are greatly appreciated. Please refer to the CONTRIBUTING.md file before creating a pull request.
