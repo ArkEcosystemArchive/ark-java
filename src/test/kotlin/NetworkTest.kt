@@ -1,4 +1,5 @@
-import kotlinx.coroutines.experimental.Deferred
+import com.nhaarman.mockito_kotlin.*
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
@@ -16,48 +17,18 @@ object NetworkTest: Spek({
 
         val peer = mainnet.getRandomPeer()
 
-        on("getStatus query")
-        {
+        on("getStatus query") {
             var status: PeerStatus? = null
 
             runBlocking {
                 status = peer.getStatus()
             }
 
-            it("should return a currentSlot higher than it's status")
-            {
+            it("should return a currentSlot higher than it's status") {
                 assert(status!!.currentSlot > status!!.height)
             }
         }
 
-        on("POST transaction")
-        {
-            val transaction = Crypto.createTransaction(
-                    "AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25",
-                    133380000000,
-                    "This is first transaction from JAVA",
-                    "this is a top secret passphrase")
-
-            var result: TransactionPostResponse? = null
-
-            runBlocking {
-                 result = peer.postTransaction(transaction).await()
-            }
-
-            it("should return 'not enough ARK' error")
-            {
-                assertEquals("Account does not have enough ARK: AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC balance: 0", result!!.error)
-            }
-        }
-
-        on("Broadcast transaction")
-        {
-
-            it("should broadcast to the max amount")
-            {
-
-            }
-        }
     }
 
     given("A random devnet peer")
@@ -83,4 +54,45 @@ object NetworkTest: Spek({
             }
         }
     }
+
+    given("A mocked peer")
+    {
+        val mockedPeer: Peer = mock{
+            on { postTransaction(any()) } doReturn async { TransactionPostResponse(
+                    true,
+                    "",
+                    "Account does not have enough ARK: AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC balance: 0") }
+        }
+
+        on("POST transaction")
+        {
+            //TODO: Mock transactions as well? maybe...
+            val transaction = Crypto.createTransaction(
+                    "AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25",
+                    133380000000,
+                    "This is first transaction from JAVA",
+                    "this is a top secret passphrase")
+
+            var result: TransactionPostResponse? = null
+
+            runBlocking {
+                result = mockedPeer.postTransaction(transaction).await()
+            }
+
+            it("should return 'not enough ARK' error")
+            {
+                assertEquals("Account does not have enough ARK: AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC balance: 0", result!!.error)
+            }
+        }
+
+        on("Broadcast transaction")
+        {
+
+            it("should broadcast to the max amount")
+            {
+
+            }
+        }
+    }
+
 })

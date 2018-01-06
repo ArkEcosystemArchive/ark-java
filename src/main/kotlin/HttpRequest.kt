@@ -44,8 +44,6 @@ object HttpRequest
         transactionArray.add(transaction.toJson())
         jsonObject.add("transactions", transactionArray)
 
-        print(jsonObject.toString())
-
         return async {
             val tripleResponse = request(path = "${peer.peerURL}/peer/transactions", method = String::httpPost)
                     .header(peer.network.getHeaders())

@@ -1,4 +1,4 @@
-class Peer(val ip: String, val port: Int, val network: Network)
+open class Peer(val ip: String, val port: Int, val network: Network)
 {
     private var protocol: String = "http://"
     private var status: String = "NEW"
@@ -20,7 +20,7 @@ class Peer(val ip: String, val port: Int, val network: Network)
 
     suspend fun getStatus() = HttpRequest.getStatus(this).await()
 
-    fun postTransaction(transaction: Transaction) =
+    open fun postTransaction(transaction: Transaction) =
             HttpRequest.postTransaction(this, transaction)
 
     fun getTransactions(account: Account, amount: Int) =
