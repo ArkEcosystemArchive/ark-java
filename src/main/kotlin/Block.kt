@@ -6,6 +6,7 @@ import java.math.BigInteger
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+//TODO: An untested & unused object ported from legacy project.
 data class Block(var previousBlock: String,
                  var version: Byte,
                  var totalAmount: Long,
