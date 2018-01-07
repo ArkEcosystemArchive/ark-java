@@ -7,56 +7,44 @@ import org.jetbrains.spek.api.dsl.on
 import org.junit.Assert.*
 
 object NetworkTest: Spek({
-    given("A random mainnet peer")
+    given("Mainnet")
     {
-        val mainnet = NetworkConstants.mainnet
-        runBlocking {
-            mainnet.warmup(2)
-        }
-
-        val peer = mainnet.getRandomPeer()
-
-        on("getStatus query") {
-            var status: PeerStatus? = null
+        on("warmup")
+        {
+            val mainnet = NetworkConstants.mainnet
+            var warmupStatus: Boolean = false
 
             runBlocking {
-                status = peer.getStatus()
+                warmupStatus = mainnet.warmup(2)
             }
 
-            it("should return a currentSlot higher than it's status") {
-                assert(status!!.currentSlot > status!!.height)
+            it("Should warmup successfully")
+            {
+                assert(warmupStatus)
             }
         }
-
     }
 
-    given("A random devnet peer")
+    given("Devnet")
     {
-        val devnet = NetworkConstants.devnet
-        runBlocking {
-            devnet.warmup(2)
-        }
-
-        val peer = devnet.getRandomPeer()
-
-        on("getStatus query")
+        on("warmup")
         {
-            var status: PeerStatus? = null
+            val devnet = NetworkConstants.devnet
+            var warmupStatus: Boolean = false
 
             runBlocking {
-                status = peer.getStatus()
+                warmupStatus = devnet.warmup(2)
             }
 
-            it("should return a currentSlot higher than it's status")
+            it("Should warmup successfully")
             {
-                assert(status!!.currentSlot > status!!.height)
+                assert(warmupStatus)
             }
         }
     }
 
     given("A mocked peer")
     {
-
         val transaction = Crypto.createTransaction(
                 "AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25",
                 133380000000,
@@ -65,6 +53,17 @@ object NetworkTest: Spek({
 
         val mockedPeer = MockedObjects.mockedPeer
 
+        on("getStatus query") {
+            var status: PeerStatus? = null
+
+            runBlocking {
+                status = mockedPeer.getStatus().await()
+            }
+
+            it("should return a currentSlot higher than it's status") {
+                assert(status!!.currentSlot > status!!.height)
+            }
+        }
 
         context("POST transactions request")
         {

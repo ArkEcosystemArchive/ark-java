@@ -1,3 +1,7 @@
+/**
+ * Contains constants for Ark official networks and provides a template describing how others can
+ * create their own [Network] instances
+ */
 object NetworkConstants
 {
     val mainnet = Network(nethash = "6e84d08bd299ed97c212c886c98a57e36545c8f5d645ca7eeae63a8bd62d8988",

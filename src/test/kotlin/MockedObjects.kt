@@ -26,5 +26,14 @@ object MockedObjects
                         "ERROR")
                 }
         }
+        on{ getStatus() } doAnswer { invocation ->
+            async {
+               PeerStatus(true,
+                       0,
+                       true,
+                       1,
+                       null)
+            }
+        }
     }
 }

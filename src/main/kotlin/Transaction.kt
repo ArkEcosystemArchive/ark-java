@@ -6,6 +6,11 @@ import org.bitcoinj.core.Base58
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+/**
+ * Represents a Ark transaction
+ * Minimal constructor requires [amount] [fee] and [type] but
+ * [Transaction] should be created using [Crypto] object methods
+ */
 data class Transaction(var id: String? = null,
                        var timestamp: Int? = null,
                        var recipientId: String? = null,
@@ -20,19 +25,31 @@ data class Transaction(var id: String? = null,
                        var asset: Asset = Asset())
 {
 
+    /**
+     * Returns a JsonObject of this instance of transaction
+     */
     fun toJson(): JsonElement? = GsonBuilder().serializeNulls().create().toJsonTree(this)
 
+    /**
+     * Populates the [senderPublicKey] and [signature] fields
+     */
     fun sign(passphrase: String)
     {
         senderPublicKey = base16Encode(Crypto.getKeys(passphrase)!!.pubKey)
         signature = base16Encode(Crypto.sign(this, passphrase)!!.encodeToDER())
     }
 
+    /**
+     * Populates the signSignature field using a second [passphrase]
+     */
     fun secondSign(passphrase: String)
     {
         signSignature = base16Encode(Crypto.secondSign(this, passphrase)!!.encodeToDER())
     }
 
+    /**
+     * Converts this object to it's [ByteArray] representation for [Crypto] signing and verification purposes
+     */
     fun toBytes(skipSignature: Boolean = true, skipSecondSignature: Boolean = true ): ByteArray
     {
         var output = ByteArray(0)
@@ -48,6 +65,9 @@ data class Transaction(var id: String? = null,
         return output
     }
 
+    /**
+     * Handles a ByteBuffer and populates it with this instance's fields
+     */
     private fun prepareBuffer(buffer: ByteBuffer, skipSignature: Boolean, skipSecondSignature: Boolean) = buffer.apply{
         order(ByteOrder.LITTLE_ENDIAN)
 

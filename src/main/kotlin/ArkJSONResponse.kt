@@ -12,21 +12,25 @@ data class PeerStatus(
         val height: Int,
         val forgingAllowed: Boolean,
         val currentSlot: Int,
-        val header: Header
+        val header: Header?
 )
+{
+    //Provides a way to show that a Peer Request failed  and returned nothing
+    constructor(success: Boolean) : this(success, 0, false, 0, null)
+}
 
 /**
  * Contains a specific Peer's information found within a PeerList
  */
 data class PeerData(
-       val ip: String,
-       val port: Int,
-       val version: String,
-       val errors: Int,
-       val os: String,
-       val height: Int,
-       val status: String,
-       val delay: Int
+        val ip: String,
+        val port: Int,
+        val version: String,
+        val errors: Int,
+        val os: String,
+        val height: Int,
+        val status: String,
+        val delay: Int
 )
 
 

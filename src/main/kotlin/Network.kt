@@ -86,6 +86,10 @@ data class Network(
     }
 
 
+    /**
+     * Processes the peerListProviders and attempts to retrieve a [PeerList] using one of them
+     * Returned peers list is sorted by the peer's delay and limited in size by [limitResults]
+     */
     fun getFreshPeers(limitResults: Int, timeout: Int = defaultTimeout): PeerList?
     {
         //If we don't have any providers, this method can't do anything
@@ -116,12 +120,15 @@ data class Network(
         return resultList
     }
 
+    /**
+     * Constructs a [Peer] object using a string representation and checks if it is responsive.
+     * Then adds it to the [peers] field
+     */
     fun verifyAndAddSeedPeer(peerInfo: String)
     {
         val peer = Peer(peerInfo.split(":"), this)
 
         runBlocking {
-            //TODO: Suspected cause of possible NPE if bad peer, catch and handle
             if (peer.isOk())
             {
                 peers.add(peer)
@@ -129,6 +136,10 @@ data class Network(
         }
     }
 
+    /**
+     * Constructs a [Peer] object using a [PeerData] representation and checks if it is responsive.
+     * Then adds it to the [peers] field
+     */
     fun verifyAndAddFreshPeer(freshPeer: PeerData, localHostAllowed: Boolean = false)
     {
         val peer = Peer(freshPeer.ip, freshPeer.port, this)
@@ -138,7 +149,6 @@ data class Network(
         {
             // Check if the peer's status is OK
             runBlocking {
-                //TODO: Suspected cause of possible NPE if bad peer, catch and handle
                 if (peer.isOk())
                 {
                     peers.add(peer)
@@ -147,6 +157,10 @@ data class Network(
         }
     }
 
+    /**
+     * Broadcasts a transaction to [broadcastMax] number of peers
+     * Returns the [broadcastMax]
+     */
     fun broadcast(transaction: Transaction): Int
     {
         for (i in 1..broadcastMax)
@@ -157,6 +171,9 @@ data class Network(
         return broadcastMax
     }
 
+    /**
+     * Randomly chooses a [Peer] associated with this network and returns it
+     */
     fun getRandomPeer(): Peer
     {
         return peers[random.nextInt(peers.size)]

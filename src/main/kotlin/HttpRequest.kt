@@ -40,13 +40,19 @@ object HttpRequest
         //Returns an object that will resolve to PeerStatus eventually
         return async {
             //Returns the Request, Response, Result<PeerStatus, FuelError>
-            val tripleResponse = request(path = "${peer.peerURL}/peer/status",
-                    method = String::httpGet)
-                    .header(peer.network.getHeaders())
-                    .responseObject(moshiDeserializerOf<PeerStatus>())
+            try
+            {
+                val tripleResponse = request(path = "${peer.peerURL}/peer/status",
+                        method = String::httpGet)
+                        .header(peer.network.getHeaders())
+                        .responseObject(moshiDeserializerOf<PeerStatus>())
 
-            //Extracts the Result(third object), and returns the PeerStatus
-            tripleResponse.third.get()
+                //Extracts the Result(third object), and returns the PeerStatus
+                tripleResponse.third.get()
+            }catch (e: Exception)
+            {
+                PeerStatus(false)
+            }
         }
     }
 
