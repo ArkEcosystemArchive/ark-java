@@ -1,4 +1,5 @@
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
@@ -26,7 +27,7 @@ object CryptoTest: Spek({
             }
         }
 
-        on("Transaction Creation")
+        context("Transaction Creation")
         {
             val transactionNormal = Crypto.createTransaction("AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25",
                     133380000000,
@@ -40,52 +41,60 @@ object CryptoTest: Spek({
                     "this is a top secret passphrase")
 
 
-            it("should verify if normal transaction")
+            on("Single Signature")
             {
-                assert(Crypto.verify(transactionNormal))
+                it("should verify if normal transaction")
+                {
+                    assert(Crypto.verify(transactionNormal))
+                }
+
+                it("should verify if vote transaction")
+                {
+                    assert(Crypto.verify(transactionVote))
+                }
+
+                it("should verify if delegate transaction")
+                {
+                    assert(Crypto.verify(transactionDelegate))
+                }
+
+                it("should fail to verify if amount is modified")
+                {
+                    transactionNormal.amount = 100000000000000
+                    assertFalse(Crypto.verify(transactionNormal))
+                }
+
+                it("should fail to verify if fee is modified")
+                {
+                    transactionNormal.fee = 11
+                    assertFalse(Crypto.verify(transactionNormal))
+                }
+
+                it("should fail to verify if recipientId is modified")
+                {
+                    transactionNormal.recipientId = "AavdJLxqBnWqaFXWm2xNirNArJNUmyUpup"
+                    assertFalse(Crypto.verify(transactionNormal))
+                }
+
+                it("should serialize/deserialize to JSON")
+                {
+                    assertEquals(transactionNormal, Crypto.fromJson(transactionNormal.toJson().toString()))
+                }
             }
 
-            it("should verify if vote transaction")
-            {
-                assert(Crypto.verify(transactionVote))
-            }
-
-            it("should verify if delegate transaction")
-            {
-                assert(Crypto.verify(transactionDelegate))
-            }
-
-            it("should fail to verify if amount is modified")
-            {
-                transactionNormal.amount = 100000000000000
-                assertFalse(Crypto.verify(transactionNormal))
-            }
-
-            it("should fail to verify if fee is modified")
-            {
-                transactionNormal.fee = 11
-                assertFalse(Crypto.verify(transactionNormal))
-            }
-
-            it("should fail to verify if recipientId is modified")
-            {
-                transactionNormal.recipientId = "AavdJLxqBnWqaFXWm2xNirNArJNUmyUpup"
-                assertFalse(Crypto.verify(transactionNormal))
-            }
-
-            it("should serialize/deserialize to JSON")
-            {
-                assertEquals(transactionNormal, Crypto.fromJson(transactionNormal.toJson().toString()))
-            }
-
-            on("with Second Signature")
+            on("Second Signature")
             {
                 val secondPassphrase = "second passphrase"
-                val secondSignTransaction = Crypto.createSecondSignature(secondPassphrase, "first passphrase")
+                val secondSignTransaction = Crypto.createSecondSignature("first passphrase", secondPassphrase)
 
-                it("should verify")
+                it("should verify first signature")
                 {
                     assert(Crypto.verify(secondSignTransaction))
+                }
+
+                it("should verify second signature")
+                {
+                    assert(Crypto.secondVerify(secondSignTransaction, secondSignTransaction.senderPublicKey!!))
                 }
 
                 it("should have null signSignature")
@@ -95,7 +104,7 @@ object CryptoTest: Spek({
 
                 it("should have the correct encode public key")
                 {
-                    assertEquals(Crypto.base16Encode(Crypto.getKeys(secondPassphrase)!!.pubKey) ,secondSignTransaction.asset.signature)
+                    assertEquals(Crypto.base16Encode(Crypto.getKeys(secondPassphrase)!!.pubKey),secondSignTransaction.asset.signature)
                 }
             }
         }

@@ -102,7 +102,7 @@ object Crypto
 
     fun createSecondSignature(passphrase: String, secondPassphrase: String): Transaction
     {
-        val transaction = Transaction(type = 2, amount = 0, fee = 2500000000)
+        val transaction = Transaction(type = 1, amount = 0, fee = 2500000000)
         transaction.asset.signature = base16Encode(Crypto.getKeys(secondPassphrase)!!.pubKey)
         return processTransaction(transaction, passphrase, secondPassphrase)
     }

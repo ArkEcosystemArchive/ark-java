@@ -27,10 +27,5 @@ data class Account(var address: String?,
 
         return Verification()
     }
-
-    fun updateBalance()
-    {
-
-    }
 }
 

@@ -1,11 +1,10 @@
-import com.nhaarman.mockito_kotlin.*
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 
 object NetworkTest: Spek({
     given("A random mainnet peer")
@@ -57,42 +56,55 @@ object NetworkTest: Spek({
 
     given("A mocked peer")
     {
-        val mockedPeer: Peer = mock{
-            on { postTransaction(any()) } doReturn async { TransactionPostResponse(
-                    true,
-                    "",
-                    "Account does not have enough ARK: AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC balance: 0") }
-        }
 
-        on("POST transaction")
+        val transaction = Crypto.createTransaction(
+                "AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25",
+                133380000000,
+                "This is first transaction from JAVA",
+                "this is a top secret passphrase")
+
+        val mockedPeer = MockedObjects.mockedPeer
+
+
+        context("POST transactions request")
         {
-            //TODO: Mock transactions as well? maybe...
-            val transaction = Crypto.createTransaction(
-                    "AXoXnFi4z1Z6aFvjEYkDVCtBGW2PaRiM25",
-                    133380000000,
-                    "This is first transaction from JAVA",
-                    "this is a top secret passphrase")
-
             var result: TransactionPostResponse? = null
 
-            runBlocking {
-                result = mockedPeer.postTransaction(transaction).await()
+            on("a valid transaction")
+            {
+                runBlocking {
+                    result = mockedPeer.postTransaction(transaction).await()
+                }
+
+                it("should not return an error property")
+                {
+                    assertNull(result!!.error)
+                }
+
+                it("should return a list of transaction ids with the first element containing this transaction's id")
+                {
+                    assertEquals(transaction.id, result!!.transactionIds!![0])
+                }
             }
 
-            it("should return 'not enough ARK' error")
+            on("a invalid transaction")
             {
-                assertEquals("Account does not have enough ARK: AGeYmgbg2LgGxRW2vNNJvQ88PknEJsYizC balance: 0", result!!.error)
-            }
-        }
+                transaction.id = null
 
-        on("Broadcast transaction")
-        {
+                runBlocking {
+                    result = mockedPeer.postTransaction(transaction).await()
+                }
 
-            it("should broadcast to the max amount")
-            {
+                it("should not return a list of transactionIds")
+                {
+                    assertNull(result!!.transactionIds)
+                }
 
+                it("should return an error String")
+                {
+                    assertNotNull(result!!.error)
+                }
             }
         }
     }
-
 })
