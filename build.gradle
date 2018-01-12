@@ -1,59 +1,106 @@
-// Apply the groovy plugin to add support for Groovy
-plugins {
-    id 'groovy'
-    id 'maven'
-}
-
-repositories {
-    jcenter()
-}
-
-model {
-    components {
-        main(JvmLibrarySpec)
+buildscript {
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
     }
 }
 
-sourceSets {
-    example {
-        groovy {
-            srcDir 'example'
+plugins {
+    id 'maven'
+    id 'maven-publish'
+    id "org.jetbrains.kotlin.jvm" version "1.1.51"
+}
+
+group 'io.ark'
+version '1.0.0'
+
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url "http://dl.bintray.com/jetbrains/spek" }
+}
+
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
         }
     }
 }
 
-task createPom {
-    doLast {
-        pom {
-            project {
-                groupId 'io.ark.lite'
-                version '0.4'
-                artifactId 'client'
-                licenses {
-                    license {
-                        name 'MIT'
-                        distribution 'repo'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            pom.withXml {
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
                     }
+                }.each() {
+                    it.scope*.value = 'compile'
                 }
             }
-        }.writeTo("$buildDir/libs/client-0.4.pom")
+        }
+    }
+}
+
+model {
+    tasks.generatePomFileForMavenPublication {
+        destination = file("$buildDir/libs/ark-java-1.0.0.pom")
+    }
+}
+
+
+kotlin {
+    experimental {
+        coroutines "enable"
     }
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.3.7'
-    compile 'org.bitcoinj:bitcoinj-core:0.14.4'
+    //Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.51"
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
+    compileClasspath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
+
+    compile 'com.github.kittinunf.fuel:fuel-moshi:1.12.0'
+
+    //Crypto
+    compile 'org.bitcoinj:bitcoinj-core:0.14.5'
+
+    // Logging
     compile 'org.slf4j:slf4j-api:1.7.+'
     compile 'ch.qos.logback:logback-classic:1.+'
+
+    //IDK
     compile 'com.madgag.spongycastle:core:1.54.0.0'
-    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
+
+    //JSON
     compile 'com.google.code.gson:gson:2.8.0'
 
-    // We use the awesome Spock testing and specification framework
-    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    //Testing
+    testCompile 'org.jetbrains.spek:spek-api:1.1.5'
+    testRuntime 'org.jetbrains.spek:spek-junit-platform-engine:1.1.5'
     testCompile 'junit:junit:4.11'
+    compile 'com.nhaarman:mockito-kotlin:1.5.0'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.1'
 }
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
