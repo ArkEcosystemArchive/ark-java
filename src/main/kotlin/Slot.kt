@@ -18,7 +18,7 @@ object Slot
 
         var returnDate = Date()
 
-        date?.let {
+        date.let {
             returnDate = date
         }
 

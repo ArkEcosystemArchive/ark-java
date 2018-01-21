@@ -3,14 +3,14 @@
 [ ![Download](https://api.bintray.com/packages/arkecosystem/ark-java/ark-java/images/download.svg) ](https://bintray.com/arkecosystem/ark-java/ark-java/_latestVersion)
 [![Build Status](https://travis-ci.org/ArkEcosystem/ark-java.svg?branch=master)](https://travis-ci.org/ArkEcosystem/ark-java)
 
-Library for interacting with an [Ark](Ark.io) Blockchain using the JVM.
+Library for interacting with an [Ark Ecosystem](https://ark.io) Blockchain using the JVM.
 
 ## Installation
 
 You must add a Bintray repository in order to retrieve the dependency:
 
 #### build.gradle
-```json
+```
     repositories {
         maven {
             url https://dl.bintray.com/arkecosystem/ark-java/
@@ -52,7 +52,7 @@ You must add a Bintray repository in order to retrieve the dependency:
 
 Include the dependency in your project:
 
-##### build.gradle
+#### build.gradle
     
 ```json
     compile 'io.ark:ark-java:1.0.0'

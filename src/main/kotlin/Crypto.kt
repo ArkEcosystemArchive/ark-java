@@ -111,7 +111,7 @@ object Crypto
     {
         val out = ByteArray(20)
 
-        var digest = RIPEMD160Digest().apply {
+        RIPEMD160Digest().apply {
             update(publicKey, 0, publicKey.size)
             doFinal(out, 0)
         }
