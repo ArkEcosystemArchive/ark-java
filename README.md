@@ -45,9 +45,6 @@ You must add a Bintray repository in order to retrieve the dependency:
             <id>bintray</id>
         </profile>
     </profiles>
-    <activeProfiles>
-        <activeProfile>bintray</activeProfile>
-    </activeProfiles>
 ```
 
 Include the dependency in your project:
