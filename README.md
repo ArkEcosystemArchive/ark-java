@@ -1,26 +1,25 @@
 # ark-java
 
-[ ![Download](https://api.bintray.com/packages/singh/ark-io/ark-java/images/download.svg) ](https://bintray.com/singh/ark-io/ark-java/_latestVersion)
-[![Build Status](https://travis-ci.org/Guppster/ark-java.svg?branch=master)](https://travis-ci.org/Guppster/ark-java)
+[ ![Download](https://api.bintray.com/packages/arkecosystem/ark-java/ark-java/images/download.svg) ](https://bintray.com/arkecosystem/ark-java/ark-java/_latestVersion)
+[![Build Status](https://travis-ci.org/ArkEcosystem/ark-java.svg?branch=master)](https://travis-ci.org/ArkEcosystem/ark-java)
 
-Library for interacting with a [Ark](Ark.io) Blockchain using the JVM.
+Library for interacting with an [Ark](Ark.io) Blockchain using the JVM.
 
 ## Installation
 
-#### Configure Bintray Repo
+You must add a Bintray repository in order to retrieve the dependency:
 
-first you need to include one of these code blocks in your build system's config file in order to find the jar
-
-_build.gradle_
-
+#### build.gradle
+```json
     repositories {
         maven {
-            url https://dl.bintray.com/singh/ark-io/
+            url https://dl.bintray.com/arkecosystem/ark-java/
         }
     }
-    
-_pom.xml_
+```
 
+#### pom.xml
+```xml
     <profiles>
         <profile>
             <repositories>
@@ -28,9 +27,9 @@ _pom.xml_
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
-                    <id>bintray-singh-ark-io</id>
-                    <name>bintray</name>
-                    <url>https://dl.bintray.com/singh/ark-io</url>
+                    <id>ark-java</id>
+                    <name>ark-java</name>
+                    <url>https://dl.bintray.com/arkecosystem/ark-java/</url>
                 </repository>
             </repositories>
             <pluginRepositories>
@@ -38,9 +37,9 @@ _pom.xml_
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
-                    <id>bintray-singh-ark-io</id>
-                    <name>bintray-plugins</name>
-                    <url>https://dl.bintray.com/singh/ark-io</url>
+                    <id>ark-io</id>
+                    <name>plugins</name>
+                    <url>https://dl.bintray.com/arkecosystem/ark-java</url>
                 </pluginRepository>
             </pluginRepositories>
             <id>bintray</id>
@@ -49,26 +48,40 @@ _pom.xml_
     <activeProfiles>
         <activeProfile>bintray</activeProfile>
     </activeProfiles>
+```
 
-#### Include the Dependency
+Include the dependency in your project:
 
-##### Gradle
+##### build.gradle
     
-_build.gradle_
-
+```json
     compile 'io.ark:ark-java:1.0.0'
+```
 
-##### Maven
+#### pom.xml
 
-_pom.xml_
-
+```xml
     <dependency>
         <groupId>io.ark</groupId>
         <artifactId>ark-java</artifactId>
         <version>1.0.0</version>
         <type>pom</type>
     </dependency>
+```
 
-## Contributing
+## Authors
+- FX Thoorens <fx@ark.io>
+- Guppster <http://www.gurpreetsingh.me>
+- dafty <https://dafty.net>
 
-Contributions are greatly appreciated. Please refer to the CONTRIBUTING.md file before creating a pull request.
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2017-2018 ARK.io<br />
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

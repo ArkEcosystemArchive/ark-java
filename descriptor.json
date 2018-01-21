@@ -1,20 +1,20 @@
 {
   "package": {
     "name": "ark-java",
-    "repo": "ark-io",
-    "subject": "singh",
-    "desc": "Ark Blockchain JVM library",
+    "repo": "ark-java",
+    "subject": "arkecosystem",
+    "desc": "Ark.io JVM Library",
     "website_url": "https://ark.io",
     "issue_tracker_url": "https://github.com/ArkEcosystem/ark-java/issues",
-    "vcs_url": "git@github.com:Guppster/ark-java.git",
+    "vcs_url": "https://github.com/ArkEcosystem/ark-java.git",
     "licenses": ["MIT"],
-    "labels": ["java", "ark", "blockchain"],
+    "labels": ["java", "ark", "ecosystem", "blockchain"],
     "public_download_numbers": true,
     "public_stats": false
   },
   "version": {
     "name": "1.0.0",
-    "released": "2018-01-08",
+    "released": "2018-01-21",
     "gpgSign": false
   },
   "files":
