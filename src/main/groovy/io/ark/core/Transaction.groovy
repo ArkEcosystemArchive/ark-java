@@ -84,7 +84,7 @@ class Transaction extends Object {
     buffer.putLong amount
     buffer.putLong fee
 
-    if(type == TransactionType.SECONDSIGNITURE || type == TransactionType.SECONDSIGNATURE){
+    if(type == TransactionType.SECONDSIGNITURE){
       buffer.put BaseEncoding.base16().lowerCase().decode(asset?.get("signature")?.get("publicKey"))
     }
     else if(type == TransactionType.DELEGATE){
