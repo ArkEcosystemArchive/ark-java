@@ -1,8 +1,5 @@
 package io.ark.core.requests;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -24,21 +21,5 @@ public class GetRequest extends Request implements Callable<String> {
     
     return getResponse();
   }
-  
-  private String getResponse() {
-    String inputLine;
-    StringBuffer response = new StringBuffer();
-    
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-      while ((inputLine = in.readLine()) != null) {
-        response.append(inputLine);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("Error parsing response from peer");
-    }
-
-    return response.toString();
-  }
-
 
 }
