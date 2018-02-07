@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.json.JSONObject;
 
@@ -21,11 +25,18 @@ import io.ark.core.util.JsonUtils;
 
 /**
  * TODO: PEER ROTATION NEEDED - Too many peers timing out.
+ * 
+ * This class is limited by the fact that it does not employ any kind of threading.
+ * Migrating these over to requests eventually using an executor pool, and Futures.
+ * 
+ * Working on making requests a more simple ordeal to hide the nastiness.
  */
 public class HttpUtils {
 
   private static final String PROTOCOL = "http://";
 
+  private final ExecutorService executor = Executors.newFixedThreadPool(5);
+  
   private Map<String, String> headers;
   private List<Peer> peers;
   private Peer currentPeer;
@@ -41,6 +52,18 @@ public class HttpUtils {
     headers.put("port", Integer.toString(config.getPort()));
     headers.put("version", config.getVersion());
     pickRandomPeer(null);
+  }
+  
+  public String getFuture(String endpoint) {
+    Future<String> response = executor.submit(new GetRequest(currentPeer, headers, endpoint));
+    String res;
+    try {
+      res = response.get();
+    } catch (InterruptedException | ExecutionException e) {
+      // TODO : retry? fail?
+      throw new RuntimeException("Request failed");
+    }
+    return res;
   }
 
   @SuppressWarnings("unchecked")
@@ -91,10 +114,10 @@ public class HttpUtils {
 
   public String _get(String endpoint) throws Exception {
     String arkNodeEndpoint = getEndpoint(endpoint);
-    System.out.println(arkNodeEndpoint);
+
     HttpURLConnection con = null;
     try {
-      con = getConnection(arkNodeEndpoint, headers);
+      con = getConnection(arkNodeEndpoint);
     } catch (Exception e) {
       pickRandomPeer(currentPeer);
       // throw new RuntimeException(MessageFormat.format("GET request {0} failed",
@@ -154,7 +177,7 @@ public class HttpUtils {
     return response.toString();
   }
 
-  private HttpURLConnection getConnection(String endpoint, Map<String, String> headers) throws Exception {
+  private HttpURLConnection getConnection(String endpoint) throws Exception {
     URL url = new URL(endpoint);
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");

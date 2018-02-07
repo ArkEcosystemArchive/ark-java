@@ -9,6 +9,7 @@ import static io.ark.core.util.Constants.ARKTOSHI;
 import io.ark.core.model.Block;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
+import io.ark.core.responses.Fees;
 
 public class BlockExplorer extends Manager {
 
@@ -53,11 +54,16 @@ public class BlockExplorer extends Manager {
   }
 
   // TODO : Deal with inconsistent JSON responses later.
-  public void getFees() {
+  /**
+   * Trying out a executor based request with Object responsible for creation.
+   * @return
+   */
+  public Fees getFees() {
     /**
      * This specific JSON is flat even though there is `fees` object that COULD be
      * created to make mapping easier.
      */
+    return Fees.fromResponse(http.getFuture(getFees));
   }
 
   public int getMilestone() {

@@ -6,9 +6,12 @@ import static io.ark.core.requests.AccessType.OBJECT;
 import static io.ark.core.util.Constants.ARKTOSHI;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.crypto.MnemonicException;
 import org.json.JSONArray;
 
 import io.ark.core.config.Options;
@@ -37,6 +40,10 @@ public class AccountManager extends Manager {
     this.txManager = new TransactionManager(config, info);
   }
 
+  public List<String> getNewPassphrase() {
+    return Crypto.getPassphrase();
+  }
+  
   public Account fetchAccount(String secret) {
     return createAccount(secret);
   }
@@ -47,7 +54,17 @@ public class AccountManager extends Manager {
     return account;
   }
 
+  public Account createAccount(List<String> secret) {
+    return createAccount(String.join(" ", secret));
+  }
+  
   public Account createAccount(String secret) {
+    try {
+      MnemonicCode.INSTANCE.check(Arrays.asList(secret.split(" ")));
+    } catch (MnemonicException e) {
+      throw new RuntimeException("Passphrase is not valid BIP39 mnemonic phrase.", e);
+    }
+    
     ECKey keyPair = Crypto.getKeys(secret, new Options());
     String address = Crypto.getAddress(keyPair.getPubKey(), info.getPubKeyHash());
 
