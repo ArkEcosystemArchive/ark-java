@@ -47,6 +47,13 @@
 
 - [ ] Multisignature
     - [ ] TBA
+    
+- [ ] Testing
+    - [ ] Comprehensive unit and integration tests
+    - [ ] Automated TravisCI builds
+    
+- [ ] Deployment
+    - [ ] Automated deployment to bintray repositories
 
 ## Completed
 
