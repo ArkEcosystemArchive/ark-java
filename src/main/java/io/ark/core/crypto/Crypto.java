@@ -6,10 +6,15 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.ECKey.ECDSASignature;
 import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.jce.ECNamedCurveTable;
@@ -23,6 +28,18 @@ public class Crypto {
 
   private static ECNamedCurveParameterSpec curve = ECNamedCurveTable.getParameterSpec("secp256k1");
 
+  public static List<String> getPassphrase() {
+    byte[] entropy = new byte[16];
+    List<String> passphrase = new ArrayList<>();
+    try {
+      SecureRandom.getInstanceStrong().nextBytes(entropy);
+      passphrase = MnemonicCode.INSTANCE.toMnemonic(entropy);
+    } catch (NoSuchAlgorithmException | MnemonicLengthException e) {
+      e.printStackTrace();
+    }
+    return passphrase;
+  }
+  
   public static void sign(final Transaction tx, final ECKey keyPair) {
     Sha256Hash data = getHash(tx, true, true);
     ECDSASignature signature = keyPair.sign(data);
