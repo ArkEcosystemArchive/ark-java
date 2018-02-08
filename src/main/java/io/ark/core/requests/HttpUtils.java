@@ -57,7 +57,6 @@ public class HttpUtils {
     String res;
     try {
       res = response.get();
-      System.out.println(res);
     } catch (InterruptedException | ExecutionException e) {
       // TODO : retry? fail?
       throw new RuntimeException("Request failed");

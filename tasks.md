@@ -3,7 +3,7 @@
 ## Open Tasks
 
 - [ ] Account Management 
-    - [ ] Generate BIP39 Passphrase
+    - [x] Generate BIP39 Passphrase
     - [x] Create Account
     - [x] Retrieve Account
     - [ ] Delegate Voting
@@ -17,10 +17,6 @@
     - [ ] Vendor Field (Smart Bridge)
     - [ ] Assets 
 
-- [ ] Block Explorer
-    - [x] Standard Response Endpoints
-    - [ ] Flat Response Endpoints
-
 ## Planned Tasks
 
 - [ ] Manager Pattern Migration
@@ -29,8 +25,8 @@
 - [ ] HTTP Request Upgrade
     - [x] Robust GET requests
     - [ ] Robust POST requests
-    - [ ] Standardize Transfer Objects
-    - [ ] Encapsulate Success Checking
+    - [x] Standardize Transfer Objects
+    - [x] Encapsulate Success Checking
 
 - [ ] Solution Redesign
     - [ ] Reduce Coupling
@@ -57,3 +53,5 @@
 
 ## Completed
 
+- [x] Block Explorer
+    - [x] All Endpoints

@@ -2,20 +2,20 @@ package io.ark.core.requests;
 
 import static io.ark.core.util.Constants.ARKTOSHI;
 
+import java.util.List;
+
 import io.ark.core.model.Block;
 import io.ark.core.model.Fees;
 import io.ark.core.model.NetworkStatus;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
+import io.ark.core.requests.dto.BlockQueryParams;
 import io.ark.core.responses.BlockExplorerResponse;
 
 public class BlockExplorer extends Manager {
 
   private static final String getBlockById = "/api/blocks/get?id=";
-
-  // TODO : Deal with this later
-  // private static final String getAllBlocks = "api/blocks";
-
+  private static final String getAllBlocks = "/api/blocks";
   private static final String getEpoch = "/api/blocks/getEpoch";
   private static final String getHeight = "/api/blocks/getHeight";
   private static final String getNethash = "/api/blocks/getNethash";
@@ -38,6 +38,16 @@ public class BlockExplorer extends Manager {
     }
 
     return res.getBlock();
+  }
+  
+  public List<Block> getAllBlocks(BlockQueryParams params) {
+    BlockExplorerResponse res = doRequest(getAllBlocks + params.getQueryString());
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return null;
   }
 
   public String getEpoch() {
