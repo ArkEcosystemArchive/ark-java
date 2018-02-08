@@ -12,52 +12,32 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Transaction implements NodeResponse {
 
-    @Getter
-    @Setter
     private String id;
 
-    @Getter
-    @Setter
     @JsonProperty("blockid")
     private String blockId;
 
-    @Getter
-    @Setter
     private int type;
 
-    @Getter
-    @Setter
     private long timestamp;
 
-    @Getter
-    @Setter
     private long amount;
 
-    @Getter
-    @Setter
     private long fee;
 
-    @Getter
-    @Setter
     private String senderId;
 
-    @Getter
-    @Setter
     private String recipientId;
 
-    @Getter
-    @Setter
     private String senderPublicKey;
 
-    @Getter
-    @Setter
     private String signatre;
 
-    @Getter
-    @Setter
     private long confirmations;
 
     public LocalDate getLocalDate() {

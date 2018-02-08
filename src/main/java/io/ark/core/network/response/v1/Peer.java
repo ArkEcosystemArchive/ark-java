@@ -8,35 +8,23 @@ import lombok.*;
 @NoArgsConstructor
 @ToString(of = {"port", "ip"})
 @EqualsAndHashCode(of = {"port", "ip"})
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Peer implements NodeResponse {
 
-    @Getter
-    @Setter
     private String ip;
 
-    @Getter
-    @Setter
     private int port;
 
-    @Getter
-    @Setter
     private String version;
 
-    @Getter
-    @Setter
     private String os;
 
-    @Getter
-    @Setter
     private long height;
 
-    @Getter
-    @Setter
     private Status status;
 
-    @Getter
-    @Setter
     private int delay;
 
     enum Status {

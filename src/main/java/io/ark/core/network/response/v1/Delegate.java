@@ -9,45 +9,29 @@ import lombok.*;
 @NoArgsConstructor
 @ToString(of = {"username"})
 @EqualsAndHashCode(of = {"username"})
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Delegate implements NodeResponse {
 
-    @Getter
-    @Setter
     private String username;
 
-    @Getter
-    @Setter
     private String address;
 
-    @Getter
-    @Setter
     private String publicKey;
 
-    @Getter
-    @Setter
     private long vote;
 
-    @Getter
-    @Setter
     @JsonProperty("producedblocks")
     private long producedBlocks;
 
-    @Getter
-    @Setter
     @JsonProperty("missedblocks")
     private long missedBlocks;
 
-    @Getter
-    @Setter
     private short rate;
 
-    @Getter
-    @Setter
     private double approval;
 
-    @Getter
-    @Setter
     private double productivity;
 
 }
