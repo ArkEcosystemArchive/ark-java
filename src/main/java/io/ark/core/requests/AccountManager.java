@@ -81,11 +81,6 @@ public class AccountManager extends Manager {
     return (double) res.getFee() / ARKTOSHI;
   }
 
-  /**
-   * This is untested with the new requests method.
-   * @param address
-   * @return
-   */
   public List<Delegate> getDelegates(String address) {
     AccountResponse res = doRequest(getDelegates + address);
 
