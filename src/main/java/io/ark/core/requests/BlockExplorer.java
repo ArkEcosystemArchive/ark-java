@@ -47,7 +47,7 @@ public class BlockExplorer extends Manager {
 
     }
 
-    return null;
+    return res.getBlocks();
   }
 
   public String getEpoch() {

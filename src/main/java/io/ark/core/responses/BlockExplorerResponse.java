@@ -1,5 +1,7 @@
 package io.ark.core.responses;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.ark.core.model.Block;
@@ -13,6 +15,7 @@ public class BlockExplorerResponse {
   private boolean success;
   private Fees fees;
   private Block block;
+  private List<Block> blocks;
   private String epoch;
   private long height;
   private String nethash;
