@@ -1,31 +1,25 @@
 package io.ark.core.requests;
 
-import static io.ark.core.requests.AccessType.ARRAY;
-import static io.ark.core.requests.AccessType.FLOAT;
-import static io.ark.core.requests.AccessType.OBJECT;
 import static io.ark.core.util.Constants.ARKTOSHI;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException;
-import org.json.JSONArray;
 
 import io.ark.core.config.Options;
 import io.ark.core.crypto.Crypto;
-import io.ark.core.exception.ArkNodeException;
 import io.ark.core.model.Account;
 import io.ark.core.model.Delegate;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
-import io.ark.core.util.JsonUtils;
+import io.ark.core.responses.AccountResponse;
 
 public class AccountManager extends Manager {
 
-  private static final String createAccount = "/api/accounts?address=";
+  private static final String getAccount = "/api/accounts?address=";
   private static final String getDelegateFee = "/api/accounts/delegates/fee";
   private static final String getDelegates = "/api/accounts/delegates?address=";
 
@@ -40,7 +34,7 @@ public class AccountManager extends Manager {
     this.txManager = new TransactionManager(config, info);
   }
 
-  public List<String> getNewPassphrase() {
+  public List<String> createPassphrase() {
     return Crypto.getPassphrase();
   }
   
@@ -67,15 +61,8 @@ public class AccountManager extends Manager {
     
     ECKey keyPair = Crypto.getKeys(secret, new Options());
     String address = Crypto.getAddress(keyPair.getPubKey(), info.getPubKeyHash());
-
-    Account account = null;
-
-    try {
-      account = getAccount(address);
-    } catch (Exception e) {
-      // TODO : errors
-      e.printStackTrace();
-    }
+    
+    Account account = getAccount(address);
 
     account.setKeyPair(keyPair);
     account.setInfo(info);
@@ -84,43 +71,40 @@ public class AccountManager extends Manager {
     return account;
   }
 
-  public float getDelegateFee() {
-    float fee = http.get(getDelegateFee, "fee", float.class, FLOAT);
-    return fee / ARKTOSHI;
+  public double getDelegateFee() {
+    AccountResponse res = doRequest(getDelegateFee);
+    
+    if (res.isSuccess()) {
+      
+    }
+    
+    return (double) res.getFee() / ARKTOSHI;
   }
 
   public List<Delegate> getDelegates(String address) {
-    JSONArray delegates = null;
-    try {
-      delegates = http.get(getDelegates + address, "delegates", JSONArray.class, ARRAY);
-    } catch (ArkNodeException ex) {
+    AccountResponse res = doRequest(getDelegates + address);
 
+    if (!res.isSuccess()) {
+      
     }
 
-    if (delegates == null) {
-      return null;
-    }
-
-    List<Delegate> delegateList = new ArrayList<Delegate>();
-    for (int i = 0; i < delegates.length(); i++) {
-      delegateList.add(JsonUtils.getObjectFromJson(delegates.getJSONObject(i), Delegate.class));
-    }
-
-    return delegateList;
+    return res.getDelegates();
   }
 
   private Account getAccount(String address) {
-    Account account;
-    try {
-      account = http.get(createAccount + address, "account", Account.class, OBJECT);
-    } catch (ArkNodeException e) {
-      if (Crypto.validateAddress(address, info.getPubKeyHash())) {
+    AccountResponse res = doRequest(getAccount + address);
+    
+    if (!res.isSuccess()) {
+      if (res.getError().equals("Account not found")) {
         return Account.defaultAccount(address);
       }
-      throw new RuntimeException(e);
     }
 
-    return account;
+    return res.getAccount();
+  }
+  
+  private AccountResponse doRequest(String endpoint) {
+    return http.getFuture(endpoint, AccountResponse.class);
   }
 
 }
