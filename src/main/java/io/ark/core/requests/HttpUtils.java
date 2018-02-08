@@ -16,9 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.json.JSONObject;
-
-import io.ark.core.exception.ArkNodeException;
 import io.ark.core.model.Peer;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.util.JsonUtils;
@@ -54,83 +51,19 @@ public class HttpUtils {
     pickRandomPeer(null);
   }
   
-  public String getFuture(String endpoint) {
+  public <T> T getFuture(String endpoint, Class<T> clazz) {
     Future<String> response = executor.submit(new GetRequest(currentPeer, headers, endpoint));
+    
     String res;
     try {
       res = response.get();
+      System.out.println(res);
     } catch (InterruptedException | ExecutionException e) {
       // TODO : retry? fail?
       throw new RuntimeException("Request failed");
     }
-    return res;
-  }
-
-  @SuppressWarnings("unchecked")
-  public <T> T get(String endpoint, String objectField, Class<T> clazz, AccessType access) {
-    String response;
-    try {
-      response = _get(endpoint);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
-    if (response == null) {
-      return null;
-    }
-
-    JSONObject obj = new JSONObject(response);
-
-    if (!obj.getBoolean("success")) {
-      throw new ArkNodeException(endpoint, obj.getString("error"));
-    }
-
-    Object result;
-
-    switch (access) {
-    case STRING:
-      result = obj.getString(objectField);
-      break;
-    case FLOAT:
-      result = obj.getFloat(objectField);
-      break;
-    case ARRAY:
-      result = obj.getJSONArray(objectField);
-      break;
-    case LONG:
-      result = obj.getLong(objectField);
-      break;
-    case INTEGER:
-      result = obj.getInt(objectField);
-      break;
-    case OBJECT:
-    default:
-      JSONObject json = obj.getJSONObject(objectField);
-      result = JsonUtils.getObjectFromJson(json, clazz);
-    }
-
-    return (T) result;
-  }
-
-  public String _get(String endpoint) throws Exception {
-    String arkNodeEndpoint = getEndpoint(endpoint);
-
-    HttpURLConnection con = null;
-    try {
-      con = getConnection(arkNodeEndpoint);
-    } catch (Exception e) {
-      pickRandomPeer(currentPeer);
-      // throw new RuntimeException(MessageFormat.format("GET request {0} failed",
-      // endpoint));
-    }
-
-    int responseCode = con.getResponseCode();
-
-    if (responseCode != 200) {
-      return null;
-    }
-
-    return getResponse(con);
+    
+    return JsonUtils.getObjectFromJson(res, clazz);
   }
 
   public String post(String endpoint, String body) throws Exception {
@@ -175,14 +108,6 @@ public class HttpUtils {
     in.close();
 
     return response.toString();
-  }
-
-  private HttpURLConnection getConnection(String endpoint) throws Exception {
-    URL url = new URL(endpoint);
-    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("GET");
-    setHeaders(con);
-    return con;
   }
 
   private HttpURLConnection postConnection(String endpoint) throws Exception {

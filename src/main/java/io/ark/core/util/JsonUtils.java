@@ -29,13 +29,17 @@ public final class JsonUtils {
     return new JSONObject(resource);
   }
 
-  public static <T> T getObjectFromJson(JSONObject object, Class<T> clazz) {
+  public static <T> T getObjectFromJson(String object, Class<T> clazz) {
     try {
-      return objectMapper.readValue(object.toString(), clazz);
+      return objectMapper.readValue(object, clazz);
     } catch (IOException e) {
       e.printStackTrace();
       throw new IllegalArgumentException("JSON could not be resolved to class " + clazz.getSimpleName());
     }
+  }
+  
+  public static <T> T getObjectFromJson(JSONObject object, Class<T> clazz) {
+    return getObjectFromJson(object.toString(), clazz);
   }
 
   public static String getObjectAsJson(Object obj) {

@@ -24,7 +24,7 @@ public class Request {
       throw new RuntimeException(MessageFormat.format("Request {0} failed", endpoint), e);
     }
   }
-  
+
   protected String getResponse() {
     String inputLine;
     StringBuffer response = new StringBuffer();

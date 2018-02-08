@@ -1,15 +1,13 @@
 package io.ark.core.requests;
 
-import static io.ark.core.requests.AccessType.INTEGER;
-import static io.ark.core.requests.AccessType.LONG;
-import static io.ark.core.requests.AccessType.OBJECT;
-import static io.ark.core.requests.AccessType.STRING;
 import static io.ark.core.util.Constants.ARKTOSHI;
 
 import io.ark.core.model.Block;
+import io.ark.core.model.Fees;
+import io.ark.core.model.NetworkStatus;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
-import io.ark.core.responses.Fees;
+import io.ark.core.responses.BlockExplorerResponse;
 
 public class BlockExplorer extends Manager {
 
@@ -33,55 +31,114 @@ public class BlockExplorer extends Manager {
   }
 
   public Block getBlockById(String id) {
-    return http.get(getBlockById + id, "block", Block.class, OBJECT);
+    BlockExplorerResponse res = doRequest(getBlockById + id);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return res.getBlock();
   }
 
   public String getEpoch() {
-    return http.get(getEpoch, "epoch", String.class, STRING);
+    BlockExplorerResponse res = doRequest(getEpoch);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return res.getEpoch();
   }
 
   public long getHeight() {
-    return http.get(getHeight, "height", long.class, LONG);
+    BlockExplorerResponse res = doRequest(getHeight);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return res.getHeight();
   }
 
   public String getNethash() {
-    return http.get(getNethash, "nethash", String.class, STRING);
+    BlockExplorerResponse res = doRequest(getNethash);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return res.getNethash();
   }
 
   public double getTransactionFee() {
-    long fee = http.get(getFee, "fee", long.class, LONG);
-    return (double) fee / ARKTOSHI;
+    BlockExplorerResponse res = doRequest(getFee);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return (double) res.getFee() / ARKTOSHI;
   }
 
-  // TODO : Deal with inconsistent JSON responses later.
-  /**
-   * Trying out a executor based request with Object responsible for creation.
-   * @return
-   */
   public Fees getFees() {
-    /**
-     * This specific JSON is flat even though there is `fees` object that COULD be
-     * created to make mapping easier.
-     */
-    return Fees.fromResponse(http.getFuture(getFees));
+    BlockExplorerResponse res = doRequest(getFees);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return res.getFees();
   }
 
   public int getMilestone() {
-    return http.get(getMilestone, "milestone", int.class, INTEGER);
+    BlockExplorerResponse res = doRequest(getMilestone);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return res.getMilestone();
   }
 
   public double getReward() {
-    long reward = http.get(getReward, "reward", int.class, INTEGER);
-    return (double) reward / ARKTOSHI;
+    BlockExplorerResponse res = doRequest(getReward);
+
+    if (!res.isSuccess()) {
+
+    }
+    
+    return (double) res.getReward() / ARKTOSHI;
   }
 
   public long getSupply() {
-    long supply = http.get(getSupply, "supply", long.class, LONG);
-    return supply / ARKTOSHI;
+    BlockExplorerResponse res = doRequest(getSupply);
+
+    if (!res.isSuccess()) {
+
+    }
+
+    return res.getSupply() / ARKTOSHI;
   }
 
-  // TODO : Inconsistent JSON format
-  public void getStatus() {
+  public NetworkStatus getStatus() {
+    BlockExplorerResponse res = doRequest(getStatus);
 
+    if (!res.isSuccess()) {
+
+    }
+
+    return NetworkStatus.builder()
+            .epoch(res.getEpoch())
+            .height(res.getHeight())
+            .nethash(res.getNethash())
+            .fee(res.getFee())
+            .milestone(res.getMilestone())
+            .reward(res.getReward())
+            .supply(res.getSupply())
+            .build();
+  }
+
+  private BlockExplorerResponse doRequest(String endpoint) {
+    return http.getFuture(endpoint, BlockExplorerResponse.class);
   }
 }
