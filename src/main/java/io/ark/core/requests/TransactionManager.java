@@ -8,7 +8,7 @@ import io.ark.core.model.Transaction;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
 import io.ark.core.requests.dto.TransactionTransport;
-import io.ark.core.util.JsonUtils;
+import io.ark.core.responses.TransactionResponse;
 
 public class TransactionManager extends Manager {
 
@@ -18,12 +18,12 @@ public class TransactionManager extends Manager {
     super(config, info);
   }
 
-  public Transaction createTransaction(String address, int amount, ECKey keyPair) {
+  public Transaction createTransaction(String address, double amount, ECKey keyPair) {
     Transaction tx = new Transaction(address, amount, keyPair);
     return tx;
   }
 
-  public String sendTransaction(String address, int amount, Account sender) {
+  public String sendTransaction(String address, double amount, Account sender) {
     Transaction tx = createTransaction(address, amount, sender.getKeyPair());
 
     Crypto.sign(tx, sender.getKeyPair());
@@ -35,16 +35,9 @@ public class TransactionManager extends Manager {
     Crypto.setId(tx);
 
     TransactionTransport txTransport = new TransactionTransport(tx);
+    TransactionResponse res = http.postFuture(SEND_TX, TransactionResponse.class, txTransport);
 
-    String response;
-    try {
-      response = http.post(http.getEndpoint(SEND_TX), JsonUtils.getObjectAsJson(txTransport));
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return null;
-    }
-    return response;
+    return res.getTransactionIds().get(0);
   }
 
 }

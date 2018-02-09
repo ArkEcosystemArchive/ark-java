@@ -30,11 +30,11 @@ public class Transaction {
   private byte[] signatureBytes;
   private byte[] signSignatureBytes;
 
-  public Transaction(String recipientId, int amount, ECKey keyPair) {
+  public Transaction(String recipientId, double amount, ECKey keyPair) {
     this.keyPair = keyPair;
 
     this.type = 0;
-    this.amount = amount * ARKTOSHI;
+    this.amount = (long) amount * ARKTOSHI;
     this.fee = TX_FEE;
     this.recipientId = recipientId;
     this.timestamp = getTime();
@@ -43,7 +43,7 @@ public class Transaction {
 
   public TransactionDTO convert() {
     return new TransactionDTO(id, type, timestamp, amount, fee, recipientId, senderPublicKey, signature, signSignature,
-        new Asset());
+        new Asset(), 1);
   }
 
   private static void validateAddress(String address, byte version) {
@@ -53,7 +53,6 @@ public class Transaction {
   }
 
   private int getTime() {
-    System.out.println(Time.getTime());
     return Time.getTime();
   }
 

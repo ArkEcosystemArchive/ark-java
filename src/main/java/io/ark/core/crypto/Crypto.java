@@ -20,7 +20,6 @@ import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 
-import io.ark.core.config.Options;
 import io.ark.core.model.Transaction;
 import io.ark.core.util.StringUtils;
 
@@ -126,7 +125,7 @@ public class Crypto {
     return Sha256Hash.of(txBytes);
   }
 
-  public static ECKey getKeys(final String secret, final Options options) {
+  public static ECKey getKeys(final String secret) {
     MessageDigest digest;
     BigInteger d;
     try {

@@ -13,12 +13,7 @@ public class GetRequest extends Request implements Callable<String> {
 
   @Override
   public String call() throws Exception {
-    int responseCode = conn.getResponseCode();
-    
-    if (responseCode != 200) {
-      
-    }
-    
+    conn.getResponseCode();
     return getResponse();
   }
 

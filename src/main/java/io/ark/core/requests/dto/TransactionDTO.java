@@ -16,4 +16,5 @@ public class TransactionDTO {
   private String signature;
   private String signSignature;
   private Object asset;
+  private int version;
 }

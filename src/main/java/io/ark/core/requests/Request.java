@@ -20,6 +20,9 @@ public class Request {
     try {
       String connectionEndpoint = getEndpoint(peer, endpoint);
       conn = (HttpURLConnection) new URL(connectionEndpoint).openConnection();
+      for (String header : headers.keySet()) {
+        conn.addRequestProperty(header, headers.get(header));
+      }
     } catch (Exception e) {
       throw new RuntimeException(MessageFormat.format("Request {0} failed", endpoint), e);
     }
@@ -34,7 +37,22 @@ public class Request {
         response.append(inputLine);
       }
     } catch (IOException e) {
-      throw new RuntimeException("Error parsing response from peer");
+      return getErrorResponse();
+    }
+
+    return response.toString();
+  }
+  
+  private String getErrorResponse() {
+    String inputLine;
+    StringBuffer response = new StringBuffer();
+    
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
+      while ((inputLine = in.readLine()) != null) {
+        response.append(inputLine);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Error parsing response from peer", e);
     }
 
     return response.toString();
