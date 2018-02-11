@@ -4,7 +4,7 @@ import static io.ark.core.util.Constants.ARKTOSHI;
 import io.ark.core.crypto.Crypto;
 import io.ark.core.model.Account;
 import io.ark.core.model.Delegate;
-import io.ark.core.network.NetworkConfig;
+import io.ark.core.network.NetworkConnections;
 import io.ark.core.network.NetworkInfo;
 import io.ark.core.responses.AccountResponse;
 import java.util.Arrays;
@@ -21,8 +21,11 @@ public class AccountManager extends Manager {
   private static final String getDelegates = "/api/accounts/delegates?address=";
   private static final String getAccount = "/api/accounts?address=";
 
-  public AccountManager(NetworkConfig config, NetworkInfo info) {
-    super(config, info);
+  private NetworkInfo info;
+  
+  public AccountManager(NetworkConnections connections, NetworkInfo info) {
+    super(connections);
+    this.info = info;
   }
 
   public String createPassphrase() {
@@ -109,7 +112,7 @@ public class AccountManager extends Manager {
   }
 
   private AccountResponse doRequest(String endpoint) {
-    return http.getFuture(endpoint, AccountResponse.class);
+    return http.get(endpoint, AccountResponse.class);
   }
 
 }

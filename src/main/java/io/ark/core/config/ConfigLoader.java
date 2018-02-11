@@ -3,7 +3,7 @@ package io.ark.core.config;
 import io.ark.core.network.ArkNetwork;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
-import io.ark.core.util.JsonUtils;
+import io.ark.core.util.ResponseUtils;
 import org.json.JSONObject;
 
 public class ConfigLoader {
@@ -20,11 +20,11 @@ public class ConfigLoader {
       case TEST:
         break;
       case DEV:
-        json = JsonUtils.getResourceJSON(DEV_CONFIG);
-        return JsonUtils.getObjectFromJson(json, NetworkConfig.class);
+        json = ResponseUtils.getResourceJSON(DEV_CONFIG);
+        return ResponseUtils.getObjectFromJson(json, NetworkConfig.class);
       case MAIN:
-        json = JsonUtils.getResourceJSON(MAIN_CONFIG);
-        return JsonUtils.getObjectFromJson(json, NetworkConfig.class);
+        json = ResponseUtils.getResourceJSON(MAIN_CONFIG);
+        return ResponseUtils.getObjectFromJson(json, NetworkConfig.class);
       default:
         break;
     }
@@ -33,7 +33,7 @@ public class ConfigLoader {
 
   public static NetworkInfo loadNetworkInformation(ArkNetwork network) throws Exception {
     if (networkInformation == null) {
-      networkInformation = JsonUtils.getResourceJSON(NETWORKS);
+      networkInformation = ResponseUtils.getResourceJSON(NETWORKS);
     }
 
     return getNetworkInformationFromJSON(network);
@@ -41,7 +41,7 @@ public class ConfigLoader {
 
   private static NetworkInfo getNetworkInformationFromJSON(ArkNetwork network) throws Exception {
     JSONObject networkObject = networkInformation.getJSONObject(network.getName());
-    return JsonUtils.getObjectFromJson(networkObject, NetworkInfo.class);
+    return ResponseUtils.getObjectFromJson(networkObject, NetworkInfo.class);
   }
 
 }

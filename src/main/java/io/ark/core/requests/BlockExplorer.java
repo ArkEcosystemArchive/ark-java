@@ -1,11 +1,10 @@
 package io.ark.core.requests;
 
 import static io.ark.core.util.Constants.ARKTOSHI;
-import io.ark.core.model.Block;
 import io.ark.core.model.Fees;
 import io.ark.core.model.NetworkStatus;
-import io.ark.core.network.NetworkConfig;
-import io.ark.core.network.NetworkInfo;
+import io.ark.core.network.NetworkConnections;
+import io.ark.core.network.response.v1.Block;
 import io.ark.core.requests.dto.BlockQueryParams;
 import io.ark.core.responses.BlockExplorerResponse;
 import java.util.List;
@@ -24,8 +23,8 @@ public class BlockExplorer extends Manager {
   private static final String getSupply = "/api/blocks/getSupply";
   private static final String getStatus = "/api/blocks/getStatus";
 
-  public BlockExplorer(NetworkConfig config, NetworkInfo info) {
-    super(config, info);
+  public BlockExplorer(NetworkConnections connections) {
+    super(connections);
   }
 
   public Block getBlockById(String id) {
@@ -147,6 +146,6 @@ public class BlockExplorer extends Manager {
   }
 
   private BlockExplorerResponse doRequest(String endpoint) {
-    return http.getFuture(endpoint, BlockExplorerResponse.class);
+    return http.get(endpoint, BlockExplorerResponse.class);
   }
 }

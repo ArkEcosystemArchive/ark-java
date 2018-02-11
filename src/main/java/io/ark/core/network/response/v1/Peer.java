@@ -3,18 +3,18 @@ package io.ark.core.network.response.v1;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.ark.core.network.response.NodeResponse;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(of = {"port", "ip"})
 @EqualsAndHashCode(of = {"port", "ip"})
-@Getter
-@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Peer implements NodeResponse {
 
