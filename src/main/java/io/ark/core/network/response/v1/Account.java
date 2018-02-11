@@ -2,7 +2,12 @@ package io.ark.core.network.response.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.ark.core.network.response.NodeResponse;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,18 +18,18 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Account implements NodeResponse {
 
-    private String address;
+  private String address;
 
-    private long unconfirmedBalance;
+  private long unconfirmedBalance;
 
-    private long balance;
+  private long balance;
 
-    private String publicKey;
+  private String publicKey;
 
-    private int unconfirmedSignature;
+  private int unconfirmedSignature;
 
-    private int secondSignature;
+  private int secondSignature;
 
-    private String secondPublicKey;
+  private String secondPublicKey;
 
 }

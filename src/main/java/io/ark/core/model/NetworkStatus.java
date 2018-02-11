@@ -16,5 +16,5 @@ public class NetworkStatus {
   private int milestone;
   private int reward;
   private long supply;
-  
+
 }

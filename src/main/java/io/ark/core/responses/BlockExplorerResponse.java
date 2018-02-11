@@ -1,11 +1,9 @@
 package io.ark.core.responses;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import io.ark.core.model.Block;
 import io.ark.core.model.Fees;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -23,5 +21,5 @@ public class BlockExplorerResponse {
   private int milestone;
   private int reward;
   private long supply;
-  
+
 }

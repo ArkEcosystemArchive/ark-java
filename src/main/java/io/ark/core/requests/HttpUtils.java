@@ -1,5 +1,8 @@
 package io.ark.core.requests;
 
+import io.ark.core.model.Peer;
+import io.ark.core.network.NetworkConfig;
+import io.ark.core.util.JsonUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +12,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import io.ark.core.model.Peer;
-import io.ark.core.network.NetworkConfig;
-import io.ark.core.util.JsonUtils;
 
 /**
  * TODO: PEER ROTATION NEEDED - Too many peers timing out.

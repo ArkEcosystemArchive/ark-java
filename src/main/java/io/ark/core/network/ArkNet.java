@@ -6,20 +6,20 @@ import io.ark.core.requests.TransactionManager;
 import lombok.Getter;
 
 public class ArkNet {
-  
+
   private Network network;
   private NetworkInfo networkInfo;
   private NetworkConfig networkConfig;
-  
+
   @Getter
   private BlockExplorer blockExplorer;
-  
+
   @Getter
   private AccountManager accountManager;
-  
+
   @Getter
   private TransactionManager transactionManager;
-  
+
   public ArkNet() {
     this.network = new DevNet();
     this.networkInfo = network.getNetworkInfo();

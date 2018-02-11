@@ -8,15 +8,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Map;
-
 import io.ark.core.model.Peer;
 
 public class Request {
 
   private static final String PROTOCOL = "http://";
-  
+
   protected HttpURLConnection conn;
-  
+
   public Request(Peer peer, Map<String, String> headers, String endpoint) {
     try {
       String connectionEndpoint = getEndpoint(peer, endpoint);
@@ -42,11 +41,11 @@ public class Request {
     }
     return response;
   }
-  
+
   private String getGenericResponse(InputStream stream) throws IOException {
     String inputLine;
     StringBuffer response = new StringBuffer();
-    
+
     try (BufferedReader in = new BufferedReader(new InputStreamReader(stream))) {
       while ((inputLine = in.readLine()) != null) {
         response.append(inputLine);
@@ -57,7 +56,7 @@ public class Request {
 
     return response.toString();
   }
-  
+
   private String getEndpoint(Peer currentPeer, String endpoint) {
     return MessageFormat.format("{0}{1}{2}", PROTOCOL, currentPeer.get(), endpoint);
   }

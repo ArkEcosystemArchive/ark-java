@@ -1,9 +1,7 @@
 package io.ark.core.model;
 
 import static io.ark.core.util.Constants.ARKTOSHI;
-
 import org.bitcoinj.core.ECKey;
-
 import io.ark.core.crypto.Crypto;
 import io.ark.core.requests.dto.TransactionDTO;
 import io.ark.core.util.Time;
@@ -42,8 +40,8 @@ public class Transaction {
   }
 
   public TransactionDTO convert() {
-    return new TransactionDTO(id, type, timestamp, amount, fee, recipientId, senderPublicKey, signature, signSignature,
-        new Asset());
+    return new TransactionDTO(id, type, timestamp, amount, fee, recipientId, senderPublicKey,
+        signature, signSignature, new Asset());
   }
 
   private static void validateAddress(String address, byte version) {

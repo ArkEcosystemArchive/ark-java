@@ -2,13 +2,6 @@
 
 ## Open Tasks
 
-- [ ] Account Management 
-    - [x] Generate BIP39 Passphrase
-    - [x] Create Account
-    - [x] Retrieve Account
-    - [ ] Delegate Voting
-    - [x] List Delegates
-
 - [ ] Transaction Management
     - [x] Create Transaction
     - [x] Sign Transaction
@@ -55,3 +48,10 @@
 
 - [x] Block Explorer
     - [x] All Endpoints
+    
+- [x] Account Management 
+    - [x] Generate BIP39 Passphrase
+    - [x] Create Account
+    - [x] Retrieve Account
+    - [x] List Delegates
+    

@@ -1,7 +1,5 @@
 package io.ark.core.requests;
 
-import org.bitcoinj.core.ECKey;
-
 import io.ark.core.crypto.Crypto;
 import io.ark.core.model.Account;
 import io.ark.core.model.Transaction;
@@ -9,6 +7,7 @@ import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
 import io.ark.core.requests.dto.TransactionTransport;
 import io.ark.core.responses.TransactionResponse;
+import org.bitcoinj.core.ECKey;
 
 public class TransactionManager extends Manager {
 

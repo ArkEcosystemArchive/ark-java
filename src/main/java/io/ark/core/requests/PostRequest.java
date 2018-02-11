@@ -1,13 +1,12 @@
 package io.ark.core.requests;
 
+import io.ark.core.model.Peer;
+import io.ark.core.util.JsonUtils;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ProtocolException;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import io.ark.core.model.Peer;
-import io.ark.core.util.JsonUtils;
 
 public class PostRequest extends Request implements Callable<String> {
 

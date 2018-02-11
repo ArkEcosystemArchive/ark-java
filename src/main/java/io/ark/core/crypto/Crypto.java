@@ -1,5 +1,7 @@
 package io.ark.core.crypto;
 
+import io.ark.core.model.Transaction;
+import io.ark.core.util.StringUtils;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -9,7 +11,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.ECKey.ECDSASignature;
 import org.bitcoinj.core.Sha256Hash;
@@ -19,9 +20,6 @@ import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
-
-import io.ark.core.model.Transaction;
-import io.ark.core.util.StringUtils;
 
 public class Crypto {
 
@@ -38,7 +36,7 @@ public class Crypto {
     }
     return passphrase;
   }
-  
+
   public static void sign(final Transaction tx, final ECKey keyPair) {
     Sha256Hash data = getHash(tx, true, true);
     ECDSASignature signature = keyPair.sign(data);
@@ -62,26 +60,27 @@ public class Crypto {
     tx.setId(StringUtils.toHexString(data.getBytes()));
   }
 
-  public static byte[] getBytes(final Transaction tx, final boolean skipSignature, final boolean skipSecondSignature) {
+  public static byte[] getBytes(final Transaction tx, final boolean skipSignature,
+      final boolean skipSecondSignature) {
     int assetSize = 0;
     byte[] assetBytes;
 
     switch (tx.getType()) {
-    case 0:
-      if (!skipSignature) {
-        assetSize += tx.getSignatureBytes().length;
-      }
-      break;
-    case 1:
-      break;
-    case 2:
-      break;
-    case 3:
-      break;
-    case 4:
-      break;
-    default:
-      break;
+      case 0:
+        if (!skipSignature) {
+          assetSize += tx.getSignatureBytes().length;
+        }
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      default:
+        break;
     }
 
     ByteBuffer bb = ByteBuffer.allocate(266 + assetSize);

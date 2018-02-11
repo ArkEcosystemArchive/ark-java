@@ -4,7 +4,6 @@ public final class Constants {
 
   public static final long ARKTOSHI = 100000000;
 
-  private Constants() {
-  }
+  private Constants() {}
 
 }

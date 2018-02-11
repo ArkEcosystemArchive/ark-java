@@ -1,7 +1,6 @@
 package io.ark.core.model;
 
 import java.text.MessageFormat;
-
 import lombok.Getter;
 
 public class Peer {

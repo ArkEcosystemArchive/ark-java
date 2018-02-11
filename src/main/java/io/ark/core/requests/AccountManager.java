@@ -1,20 +1,17 @@
 package io.ark.core.requests;
 
 import static io.ark.core.util.Constants.ARKTOSHI;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.crypto.MnemonicCode;
-import org.bitcoinj.crypto.MnemonicException;
-
 import io.ark.core.crypto.Crypto;
 import io.ark.core.model.Account;
 import io.ark.core.model.Delegate;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
 import io.ark.core.responses.AccountResponse;
+import java.util.Arrays;
+import java.util.List;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.crypto.MnemonicException;
 
 public class AccountManager extends Manager {
 
@@ -31,42 +28,42 @@ public class AccountManager extends Manager {
   public String createPassphrase() {
     return String.join(" ", Crypto.getPassphrase());
   }
-  
+
   public double getBalance(String address) {
     AccountResponse res = doRequest(getBalance + address);
-    
+
     if (res.isSuccess()) {
-      
+
     }
-    
+
     return (double) res.getBalance() / ARKTOSHI;
   }
-  
+
   public String getPublicKey(String address) {
     AccountResponse res = doRequest(getPublicKey + address);
-    
+
     if (res.isSuccess()) {
-      
+
     }
-    
+
     return res.getPublicKey();
   }
-  
+
   public double getDelegateFee() {
     AccountResponse res = doRequest(getDelegateFee);
-    
+
     if (res.isSuccess()) {
-      
+
     }
-    
+
     return (double) res.getFee() / ARKTOSHI;
   }
-  
+
   public List<Delegate> getDelegates(String address) {
     AccountResponse res = doRequest(getDelegates + address);
 
     if (!res.isSuccess()) {
-      
+
     }
 
     return res.getDelegates();
@@ -75,23 +72,23 @@ public class AccountManager extends Manager {
   public Account createAccount(String secret) {
     return getAccount(secret);
   }
-  
+
   public Account getAccount(String secret, String secondSecret) {
     Account account = getAccount(secret);
     account.setSecondKeyPair(Crypto.getKeys(secondSecret));
     return account;
   }
-  
+
   public Account getAccount(String secret) {
     try {
       MnemonicCode.INSTANCE.check(Arrays.asList(secret.split(" ")));
     } catch (MnemonicException e) {
       throw new RuntimeException("Passphrase is not valid BIP39 mnemonic phrase.", e);
     }
-    
+
     ECKey keyPair = Crypto.getKeys(secret);
     String address = Crypto.getAddress(keyPair.getPubKey(), info.getPubKeyHash());
-    
+
     Account account = _getAccount(address);
 
     account.setKeyPair(keyPair);
@@ -100,7 +97,7 @@ public class AccountManager extends Manager {
 
   private Account _getAccount(String address) {
     AccountResponse res = doRequest(getAccount + address);
-    
+
     if (!res.isSuccess()) {
       if (res.getError().equals("Account not found")) {
         return Account.defaultAccount(address);
@@ -110,7 +107,7 @@ public class AccountManager extends Manager {
 
     return res.getAccount();
   }
-  
+
   private AccountResponse doRequest(String endpoint) {
     return http.getFuture(endpoint, AccountResponse.class);
   }

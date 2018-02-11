@@ -10,5 +10,5 @@ public class Fees {
   private float secondsignature;
   private float delegate;
   private float multisignature;
-  
+
 }

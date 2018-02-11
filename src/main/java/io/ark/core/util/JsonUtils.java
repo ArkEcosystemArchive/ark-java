@@ -1,17 +1,14 @@
 package io.ark.core.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.ark.core.config.ConfigLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.ark.core.config.ConfigLoader;
 
 public final class JsonUtils {
 
@@ -34,10 +31,11 @@ public final class JsonUtils {
       return objectMapper.readValue(object, clazz);
     } catch (IOException e) {
       e.printStackTrace();
-      throw new IllegalArgumentException("JSON could not be resolved to class " + clazz.getSimpleName());
+      throw new IllegalArgumentException(
+          "JSON could not be resolved to class " + clazz.getSimpleName());
     }
   }
-  
+
   public static <T> T getObjectFromJson(JSONObject object, Class<T> clazz) {
     return getObjectFromJson(object.toString(), clazz);
   }
@@ -50,6 +48,5 @@ public final class JsonUtils {
     }
   }
 
-  private JsonUtils() {
-  }
+  private JsonUtils() {}
 }

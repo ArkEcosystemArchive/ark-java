@@ -1,11 +1,10 @@
 package io.ark.core.config;
 
-import org.json.JSONObject;
-
 import io.ark.core.network.ArkNetwork;
 import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
 import io.ark.core.util.JsonUtils;
+import org.json.JSONObject;
 
 public class ConfigLoader {
 
@@ -18,16 +17,16 @@ public class ConfigLoader {
   public static NetworkConfig loadNetworkConfig(ArkNetwork network) throws Exception {
     JSONObject json;
     switch (network) {
-    case TEST:
-      break;
-    case DEV:
-      json = JsonUtils.getResourceJSON(DEV_CONFIG);
-      return JsonUtils.getObjectFromJson(json, NetworkConfig.class);
-    case MAIN:
-      json = JsonUtils.getResourceJSON(MAIN_CONFIG);
-      return JsonUtils.getObjectFromJson(json, NetworkConfig.class);
-    default:
-      break;
+      case TEST:
+        break;
+      case DEV:
+        json = JsonUtils.getResourceJSON(DEV_CONFIG);
+        return JsonUtils.getObjectFromJson(json, NetworkConfig.class);
+      case MAIN:
+        json = JsonUtils.getResourceJSON(MAIN_CONFIG);
+        return JsonUtils.getObjectFromJson(json, NetworkConfig.class);
+      default:
+        break;
     }
     return null;
   }
