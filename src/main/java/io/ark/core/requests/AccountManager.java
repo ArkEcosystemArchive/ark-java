@@ -1,6 +1,5 @@
 package io.ark.core.requests;
 
-import static io.ark.core.util.Constants.ARKTOSHI;
 import io.ark.core.crypto.Crypto;
 import io.ark.core.model.Account;
 import io.ark.core.model.Delegate;
@@ -29,14 +28,14 @@ public class AccountManager extends Manager {
     return String.join(" ", Crypto.getPassphrase());
   }
 
-  public double getBalance(String address) {
+  public long getBalance(String address) {
     AccountResponse res = doRequest(getBalance + address);
 
     if (res.isSuccess()) {
 
     }
 
-    return (double) res.getBalance() / ARKTOSHI;
+    return res.getBalance();
   }
 
   public String getPublicKey(String address) {
@@ -49,14 +48,14 @@ public class AccountManager extends Manager {
     return res.getPublicKey();
   }
 
-  public double getDelegateFee() {
+  public long getDelegateFee() {
     AccountResponse res = doRequest(getDelegateFee);
 
     if (res.isSuccess()) {
 
     }
 
-    return (double) res.getFee() / ARKTOSHI;
+    return res.getFee();
   }
 
   public List<Delegate> getDelegates(String address) {
