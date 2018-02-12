@@ -2,7 +2,12 @@ package io.ark.core.network.response.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.ark.core.network.response.NodeResponse;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,21 +18,21 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Peer implements NodeResponse {
 
-    private String ip;
+  private String ip;
 
-    private int port;
+  private int port;
 
-    private String version;
+  private String version;
 
-    private String os;
+  private String os;
 
-    private long height;
+  private long height;
 
-    private Status status;
+  private Status status;
 
-    private int delay;
+  private int delay;
 
-    enum Status {
-        OK, FORK, NEW, ERESPONSE, EAPI, ENETHASH
-    }
+  enum Status {
+    OK, FORK, NEW, ERESPONSE, EAPI, ENETHASH
+  }
 }

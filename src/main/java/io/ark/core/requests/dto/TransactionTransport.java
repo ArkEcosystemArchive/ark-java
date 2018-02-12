@@ -1,9 +1,8 @@
 package io.ark.core.requests.dto;
 
+import io.ark.core.model.Transaction;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.ark.core.model.Transaction;
 import lombok.Data;
 
 @Data

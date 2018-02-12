@@ -51,7 +51,6 @@
 			<version>2.9.4</version>
 		</dependency>
 
-
 		<!-- https://mvnrepository.com/artifact/org.bitcoinj/bitcoinj-core -->
 		<dependency>
 			<groupId>org.bitcoinj</groupId>
@@ -71,4 +70,25 @@
 
 	</dependencies>
 
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>3.0.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>3.0.0</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<configLocation>dev/google_checks.xml</configLocation>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

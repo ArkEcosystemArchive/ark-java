@@ -1,7 +1,6 @@
 package io.ark.core.requests.dto;
 
 import java.text.MessageFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +19,7 @@ public class BlockQueryParams {
   private Integer reward;
   private String previousBlock;
   private Integer height;
-  
+
   public String getQueryString() {
     StringBuilder sb = new StringBuilder();
     sb.append(limit != null ? getQuery("limit", limit.toString()) : "");
@@ -34,9 +33,9 @@ public class BlockQueryParams {
     sb.append(height != null ? getQuery("height", height.toString()) : "");
     return sb.toString();
   }
-  
+
   private String getQuery(String fieldName, String fieldValue) {
     return MessageFormat.format("?{0}={1}", fieldName, fieldValue);
   }
-  
+
 }

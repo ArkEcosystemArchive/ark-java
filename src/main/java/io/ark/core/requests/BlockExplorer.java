@@ -1,9 +1,5 @@
 package io.ark.core.requests;
 
-import static io.ark.core.util.Constants.ARKTOSHI;
-
-import java.util.List;
-
 import io.ark.core.model.Block;
 import io.ark.core.model.Fees;
 import io.ark.core.model.NetworkStatus;
@@ -11,6 +7,7 @@ import io.ark.core.network.NetworkConfig;
 import io.ark.core.network.NetworkInfo;
 import io.ark.core.requests.dto.BlockQueryParams;
 import io.ark.core.responses.BlockExplorerResponse;
+import java.util.List;
 
 public class BlockExplorer extends Manager {
 
@@ -39,7 +36,7 @@ public class BlockExplorer extends Manager {
 
     return res.getBlock();
   }
-  
+
   public List<Block> getAllBlocks(BlockQueryParams params) {
     BlockExplorerResponse res = doRequest(getAllBlocks + params.getQueryString());
 
@@ -80,14 +77,14 @@ public class BlockExplorer extends Manager {
     return res.getNethash();
   }
 
-  public double getTransactionFee() {
+  public long getTransactionFee() {
     BlockExplorerResponse res = doRequest(getFee);
 
     if (!res.isSuccess()) {
 
     }
 
-    return (double) res.getFee() / ARKTOSHI;
+    return res.getFee();
   }
 
   public Fees getFees() {
@@ -110,14 +107,14 @@ public class BlockExplorer extends Manager {
     return res.getMilestone();
   }
 
-  public double getReward() {
+  public long getReward() {
     BlockExplorerResponse res = doRequest(getReward);
 
     if (!res.isSuccess()) {
 
     }
-    
-    return (double) res.getReward() / ARKTOSHI;
+
+    return res.getReward();
   }
 
   public long getSupply() {
@@ -127,7 +124,7 @@ public class BlockExplorer extends Manager {
 
     }
 
-    return res.getSupply() / ARKTOSHI;
+    return res.getSupply();
   }
 
   public NetworkStatus getStatus() {
@@ -138,14 +135,14 @@ public class BlockExplorer extends Manager {
     }
 
     return NetworkStatus.builder()
-            .epoch(res.getEpoch())
-            .height(res.getHeight())
-            .nethash(res.getNethash())
-            .fee(res.getFee())
-            .milestone(res.getMilestone())
-            .reward(res.getReward())
-            .supply(res.getSupply())
-            .build();
+        .epoch(res.getEpoch())
+        .height(res.getHeight())
+        .nethash(res.getNethash())
+        .fee(res.getFee())
+        .milestone(res.getMilestone())
+        .reward(res.getReward())
+        .supply(res.getSupply())
+        .build();
   }
 
   private BlockExplorerResponse doRequest(String endpoint) {

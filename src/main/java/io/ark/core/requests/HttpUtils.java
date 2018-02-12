@@ -1,11 +1,8 @@
 package io.ark.core.requests;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.MessageFormat;
+import io.ark.core.model.Peer;
+import io.ark.core.network.NetworkConfig;
+import io.ark.core.util.JsonUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +13,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import io.ark.core.model.Peer;
-import io.ark.core.network.NetworkConfig;
-import io.ark.core.util.JsonUtils;
-
 /**
  * TODO: PEER ROTATION NEEDED - Too many peers timing out.
  * 
@@ -29,9 +22,6 @@ import io.ark.core.util.JsonUtils;
  * Working on making requests a more simple ordeal to hide the nastiness.
  */
 public class HttpUtils {
-
-  private static final String PROTOCOL = "http://";
-
   private final ExecutorService executor = Executors.newFixedThreadPool(5);
   
   private Map<String, String> headers;
@@ -53,75 +43,23 @@ public class HttpUtils {
   
   public <T> T getFuture(String endpoint, Class<T> clazz) {
     Future<String> response = executor.submit(new GetRequest(currentPeer, headers, endpoint));
-    
+    return getResponse(response, clazz);
+  }
+  
+  public <T> T postFuture(String endpoint, Class<T> clazz, Object payload) {
+    Future<String> response = executor.submit(new PostRequest(currentPeer, headers, endpoint, payload));
+    return getResponse(response, clazz);
+  }
+  
+  private <T> T getResponse(Future<String> response, Class<T> clazz) {
     String res;
     try {
       res = response.get();
     } catch (InterruptedException | ExecutionException e) {
       // TODO : retry? fail?
-      throw new RuntimeException("Request failed");
+      throw new RuntimeException("Request failed.", e);
     }
-    
     return JsonUtils.getObjectFromJson(res, clazz);
-  }
-
-  public String post(String endpoint, String body) throws Exception {
-    HttpURLConnection con;
-    try {
-      con = postConnection(endpoint);
-    } catch (Exception e) {
-      e.printStackTrace();
-      pickRandomPeer(currentPeer);
-      throw new RuntimeException(MessageFormat.format("POST request {0} failed", endpoint));
-    }
-
-    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-    wr.writeBytes(body);
-    wr.flush();
-    wr.close();
-
-    int responseCode = con.getResponseCode();
-
-    if (responseCode != 200) {
-      return null;
-    }
-
-    String response = getResponse(con);
-    System.out.println(response);
-
-    return response;
-  }
-
-  public String getEndpoint(String api) {
-    return MessageFormat.format("{0}{1}{2}", PROTOCOL, currentPeer.get(), api);
-  }
-
-  private String getResponse(HttpURLConnection con) throws Exception {
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-    String inputLine;
-    StringBuffer response = new StringBuffer();
-
-    while ((inputLine = in.readLine()) != null) {
-      response.append(inputLine);
-    }
-    in.close();
-
-    return response.toString();
-  }
-
-  private HttpURLConnection postConnection(String endpoint) throws Exception {
-    URL url = new URL(endpoint);
-    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("POST");
-    con.setDoOutput(true);
-    setHeaders(con);
-    return con;
-  }
-
-  private void setHeaders(HttpURLConnection con) {
-    for (String header : headers.keySet()) {
-      con.addRequestProperty(header, headers.get(header));
-    }
   }
 
   private void pickRandomPeer(Peer peer) {

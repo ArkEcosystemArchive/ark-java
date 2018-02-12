@@ -3,10 +3,14 @@ package io.ark.core.network.response.v1;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.ark.core.network.response.NodeResponse;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,30 +21,30 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Transaction implements NodeResponse {
 
-    private String id;
+  private String id;
 
-    @JsonProperty("blockid")
-    private String blockId;
+  @JsonProperty("blockid")
+  private String blockId;
 
-    private int type;
+  private int type;
 
-    private long timestamp;
+  private long timestamp;
 
-    private long amount;
+  private long amount;
 
-    private long fee;
+  private long fee;
 
-    private String senderId;
+  private String senderId;
 
-    private String recipientId;
+  private String recipientId;
 
-    private String senderPublicKey;
+  private String senderPublicKey;
 
-    private String signatre;
+  private String signatre;
 
-    private long confirmations;
+  private long confirmations;
 
-    public LocalDate getLocalDate() {
-        return LocalDateTime.of(2017, 3, 21, 13, 0, 0).plusSeconds(this.timestamp).toLocalDate();
-    }
+  public LocalDate getLocalDate() {
+    return LocalDateTime.of(2017, 3, 21, 13, 0, 0).plusSeconds(this.timestamp).toLocalDate();
+  }
 }
