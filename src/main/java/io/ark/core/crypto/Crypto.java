@@ -118,8 +118,7 @@ public class Crypto {
     return buffer;
   }
 
-  public static Sha256Hash getHash(final Transaction tx, final boolean skipSignature,
-      final boolean skipSecondSignature) {
+  public static Sha256Hash getHash(final Transaction tx, final boolean skipSignature, final boolean skipSecondSignature) {
     byte[] txBytes = getBytes(tx, skipSignature, skipSecondSignature);
     return Sha256Hash.of(txBytes);
   }
