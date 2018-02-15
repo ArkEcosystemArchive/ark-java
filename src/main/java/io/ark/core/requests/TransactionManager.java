@@ -16,12 +16,12 @@ public class TransactionManager extends Manager {
     super(connections);
   }
 
-  public Transaction createTransaction(String address, double amount, ECKey keyPair) {
+  public Transaction createTransaction(String address, long amount, ECKey keyPair) {
     Transaction tx = new Transaction(address, amount, keyPair);
     return tx;
   }
 
-  public String sendTransaction(String address, double amount, Account sender) {
+  public String sendTransaction(String address, long amount, Account sender) {
     Transaction tx = createTransaction(address, amount, sender.getKeyPair());
 
     Crypto.sign(tx, sender.getKeyPair());

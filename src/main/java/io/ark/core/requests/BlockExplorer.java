@@ -1,6 +1,5 @@
 package io.ark.core.requests;
 
-import static io.ark.core.util.Constants.ARKTOSHI;
 import io.ark.core.model.Fees;
 import io.ark.core.model.NetworkStatus;
 import io.ark.core.network.NetworkConnections;
@@ -77,14 +76,14 @@ public class BlockExplorer extends Manager {
     return res.getNethash();
   }
 
-  public double getTransactionFee() {
+  public long getTransactionFee() {
     BlockExplorerResponse res = doRequest(getFee);
 
     if (!res.isSuccess()) {
 
     }
 
-    return (double) res.getFee() / ARKTOSHI;
+    return res.getFee();
   }
 
   public Fees getFees() {
@@ -107,14 +106,14 @@ public class BlockExplorer extends Manager {
     return res.getMilestone();
   }
 
-  public double getReward() {
+  public long getReward() {
     BlockExplorerResponse res = doRequest(getReward);
 
     if (!res.isSuccess()) {
 
     }
 
-    return (double) res.getReward() / ARKTOSHI;
+    return res.getReward();
   }
 
   public long getSupply() {
@@ -124,7 +123,7 @@ public class BlockExplorer extends Manager {
 
     }
 
-    return res.getSupply() / ARKTOSHI;
+    return res.getSupply();
   }
 
   public NetworkStatus getStatus() {

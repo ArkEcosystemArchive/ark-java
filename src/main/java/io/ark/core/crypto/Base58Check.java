@@ -99,9 +99,8 @@ public final class Base58Check {
 
   /*---- Class constants ----*/
 
-  public static final String ALPHABET =
-      "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; // Everything
-                                                                    // except 0OIl
+  public static final String ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; // Everything
+                                                                                                      // except 0OIl
   private static final BigInteger ALPHABET_SIZE = BigInteger.valueOf(ALPHABET.length());
 
   /*---- Miscellaneous ----*/
