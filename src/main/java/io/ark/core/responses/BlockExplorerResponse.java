@@ -1,8 +1,8 @@
 package io.ark.core.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.ark.core.model.Block;
 import io.ark.core.model.Fees;
+import io.ark.core.network.response.v1.Block;
 import java.util.List;
 import lombok.Data;
 

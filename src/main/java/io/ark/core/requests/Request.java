@@ -1,5 +1,6 @@
 package io.ark.core.requests;
 
+import io.ark.core.network.response.v1.Peer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Map;
-import io.ark.core.model.Peer;
 
 public class Request {
 
@@ -58,6 +58,6 @@ public class Request {
   }
 
   private String getEndpoint(Peer currentPeer, String endpoint) {
-    return MessageFormat.format("{0}{1}{2}", PROTOCOL, currentPeer.get(), endpoint);
+    return MessageFormat.format("{0}{1}:{2}{3}", PROTOCOL, currentPeer.getIp(), Integer.toString(currentPeer.getPort()), endpoint);
   }
 }

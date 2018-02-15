@@ -1,32 +1,37 @@
 package io.ark.core.network;
 
+import io.ark.core.config.ConfigLoader;
 import io.ark.core.requests.AccountManager;
 import io.ark.core.requests.BlockExplorer;
 import io.ark.core.requests.TransactionManager;
+import java.text.MessageFormat;
 import lombok.Getter;
 
 public class ArkNet {
 
-  private Network network;
-  private NetworkInfo networkInfo;
-  private NetworkConfig networkConfig;
+  protected NetworkConfig networkConfig;
+  protected NetworkInfo networkInfo;
+  protected NetworkConnections connections;
 
   @Getter
-  private BlockExplorer blockExplorer;
-
+  protected BlockExplorer blockExplorer;
   @Getter
-  private AccountManager accountManager;
-
+  protected AccountManager accountManager;
   @Getter
-  private TransactionManager transactionManager;
+  protected TransactionManager transactionManager;
 
-  public ArkNet() {
-    this.network = new DevNet();
-    this.networkInfo = network.getNetworkInfo();
-    this.networkConfig = network.getNetworkConfig();
-    this.accountManager = new AccountManager(networkConfig, networkInfo);
-    this.blockExplorer = new BlockExplorer(networkConfig, networkInfo);
-    this.transactionManager = new TransactionManager(networkConfig, networkInfo);
+  public ArkNet(ArkNetwork network) {
+    try {
+      this.networkConfig = ConfigLoader.loadNetworkConfig(network);
+      this.networkInfo = ConfigLoader.loadNetworkInformation(network);
+      this.connections = new NetworkConnections(networkConfig);
+    } catch (Exception e) {
+      throw new RuntimeException(MessageFormat.format("Failed to instantiate ARK_{0}_NET", network.name()), e);
+    }
+
+    this.accountManager = new AccountManager(connections, networkInfo);
+    this.blockExplorer = new BlockExplorer(connections);
+    this.transactionManager = new TransactionManager(connections);
   }
 
 }

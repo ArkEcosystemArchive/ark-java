@@ -3,8 +3,7 @@ package io.ark.core.requests;
 import io.ark.core.crypto.Crypto;
 import io.ark.core.model.Account;
 import io.ark.core.model.Transaction;
-import io.ark.core.network.NetworkConfig;
-import io.ark.core.network.NetworkInfo;
+import io.ark.core.network.NetworkConnections;
 import io.ark.core.requests.dto.TransactionTransport;
 import io.ark.core.responses.TransactionResponse;
 import org.bitcoinj.core.ECKey;
@@ -13,8 +12,8 @@ public class TransactionManager extends Manager {
 
   private static final String SEND_TX = "/peer/transactions";
 
-  public TransactionManager(NetworkConfig config, NetworkInfo info) {
-    super(config, info);
+  public TransactionManager(NetworkConnections connections) {
+    super(connections);
   }
 
   public Transaction createTransaction(String address, long amount, ECKey keyPair) {
@@ -34,7 +33,7 @@ public class TransactionManager extends Manager {
     Crypto.setId(tx);
 
     TransactionTransport txTransport = new TransactionTransport(tx);
-    TransactionResponse res = http.postFuture(SEND_TX, TransactionResponse.class, txTransport);
+    TransactionResponse res = http.post(SEND_TX, TransactionResponse.class, txTransport);
 
     return res.getTransactionIds().get(0);
   }
