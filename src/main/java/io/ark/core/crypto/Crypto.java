@@ -60,8 +60,7 @@ public class Crypto {
     tx.setId(StringUtils.toHexString(data.getBytes()));
   }
 
-  public static byte[] getBytes(final Transaction tx, final boolean skipSignature,
-      final boolean skipSecondSignature) {
+  public static byte[] getBytes(final Transaction tx, final boolean skipSignature, final boolean skipSecondSignature) {
     int assetSize = 0;
     byte[] assetBytes;
 
