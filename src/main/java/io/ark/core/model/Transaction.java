@@ -1,6 +1,5 @@
 package io.ark.core.model;
 
-import io.ark.core.crypto.Crypto;
 import io.ark.core.requests.dto.TransactionDTO;
 import io.ark.core.util.Time;
 import lombok.Data;
@@ -23,29 +22,38 @@ public class Transaction {
   private ECKey keyPair;
   private byte[] signatureBytes;
   private byte[] signSignatureBytes;
+  private String vendorField;
 
-  public Transaction(String recipientId, long amount, ECKey keyPair) {
+  public Transaction(String recipientId, long amount, ECKey keyPair, long fee) {
+    this(recipientId, amount, null, keyPair, fee);
+  }
+  
+  public Transaction(String recipientId, long amount, String vendorField, ECKey keyPair, long fee) {
     this.keyPair = keyPair;
 
     this.type = 0;
     this.amount = amount;
     this.recipientId = recipientId;
-    this.timestamp = getTime();
+    this.timestamp = Time.getTime();
     this.senderPublicKey = keyPair.getPublicKeyAsHex();
+    this.vendorField = vendorField;
+    this.fee = fee;
   }
 
-  public TransactionDTO convert() {
-    return new TransactionDTO(id, type, timestamp, amount, fee, recipientId, senderPublicKey, signature, signSignature, new Asset());
-  }
-
-  private static void validateAddress(String address, byte version) {
-    if (!Crypto.validateAddress(address, version)) {
-      throw new IllegalArgumentException("");
-    }
-  }
-
-  private int getTime() {
-    return Time.getTime();
+  public TransactionDTO convert(Asset asset) {
+    return TransactionDTO.builder()
+        .id(id)
+        .type(type)
+        .timestamp(timestamp)
+        .amount(amount)
+        .fee(fee)
+        .recipientId(recipientId)
+        .senderPublicKey(senderPublicKey)
+        .signature(signature)
+        .signSignature(signSignature)
+        .asset(asset)
+        .vendorField(vendorField)
+        .build();
   }
 
 }

@@ -89,7 +89,7 @@ public class AccountManager extends Manager {
     }
 
     ECKey keyPair = Crypto.getKeys(secret);
-    String address = Crypto.getAddress(keyPair.getPubKey(), info.getPubKeyHash());
+    String address = Crypto.getAddress(keyPair, info.getPubKeyHash());
 
     Account account = _getAccount(address);
 
@@ -111,7 +111,11 @@ public class AccountManager extends Manager {
   }
 
   private AccountResponse doRequest(String endpoint) {
-    return http.get(endpoint, AccountResponse.class);
+    try {
+      return http.get(endpoint, AccountResponse.class);
+    } catch (Exception e) {
+      return AccountResponse.builder().success(false).build();
+    }
   }
 
 }

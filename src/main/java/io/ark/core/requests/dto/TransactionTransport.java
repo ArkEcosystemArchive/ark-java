@@ -1,29 +1,13 @@
 package io.ark.core.requests.dto;
 
-import io.ark.core.model.Transaction;
-import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class TransactionTransport {
 
   private List<TransactionDTO> transactions;
-
-  public TransactionTransport(Transaction tx) {
-    setup();
-    transactions.add(tx.convert());
-  }
-
-  public TransactionTransport(List<Transaction> txs) {
-    setup();
-    for (Transaction tx : txs) {
-      transactions.add(tx.convert());
-    }
-  }
-
-  private void setup() {
-    transactions = new ArrayList<TransactionDTO>();
-  }
 
 }

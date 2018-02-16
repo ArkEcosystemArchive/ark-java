@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 public final class ResponseUtils {
 
-  private static final long TIMEOUT_LENGTH = 1;
+  private static final long TIMEOUT_LENGTH = 5;
   private static final TimeUnit TIMEOUT_UNITS = TimeUnit.SECONDS;
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -54,14 +54,8 @@ public final class ResponseUtils {
     }
   }
 
-  public static <T> T getResponse(Future<String> response, Class<T> clazz) {
-    String res;
-    try {
-      res = response.get(TIMEOUT_LENGTH, TIMEOUT_UNITS);
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      // TODO : retry? fail?
-      throw new RuntimeException("Request failed.", e);
-    }
+  public static <T> T getResponse(Future<String> response, Class<T> clazz) throws InterruptedException, ExecutionException, TimeoutException {
+    String res = response.get(TIMEOUT_LENGTH, TIMEOUT_UNITS);
     return getObjectFromJson(res, clazz);
   }
 

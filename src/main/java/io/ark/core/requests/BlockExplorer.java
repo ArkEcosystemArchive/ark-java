@@ -1,9 +1,9 @@
 package io.ark.core.requests;
 
-import io.ark.core.model.Fees;
 import io.ark.core.model.NetworkStatus;
 import io.ark.core.network.NetworkConnections;
 import io.ark.core.network.response.v1.Block;
+import io.ark.core.network.response.v1.Fee;
 import io.ark.core.requests.dto.BlockQueryParams;
 import io.ark.core.responses.BlockExplorerResponse;
 import java.util.List;
@@ -86,7 +86,7 @@ public class BlockExplorer extends Manager {
     return res.getFee();
   }
 
-  public Fees getFees() {
+  public Fee getFees() {
     BlockExplorerResponse res = doRequest(getFees);
 
     if (!res.isSuccess()) {
@@ -145,6 +145,10 @@ public class BlockExplorer extends Manager {
   }
 
   private BlockExplorerResponse doRequest(String endpoint) {
-    return http.get(endpoint, BlockExplorerResponse.class);
+    try {
+      return http.get(endpoint, BlockExplorerResponse.class);
+    } catch (Exception e) {
+      return BlockExplorerResponse.builder().success(false).build();
+    }
   }
 }

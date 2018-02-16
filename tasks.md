@@ -9,28 +9,20 @@
     - [ ] Multisignature
     - [ ] Vendor Field (Smart Bridge)
     - [ ] Assets 
+    
+- [ ] Peer Management
+    - [x] Load Network Peers
+    - [ ] Smart Peer Cycling
+        - [x] Naive Peer Cycling
+    - [x] Peer Comparison
 
 ## Planned Tasks
-
-- [ ] Manager Pattern Migration
-    - [ ] Account Manager
 
 - [ ] HTTP Request Upgrade
     - [x] Robust GET requests
     - [ ] Robust POST requests
     - [x] Standardize Transfer Objects
     - [x] Encapsulate Success Checking
-
-- [ ] Solution Redesign
-    - [ ] Reduce Coupling
-    - [ ] Reduce Method Overloads
-    - [ ] Standardize Key Format to One Type
-
-- [ ] Peer Management
-    - [x] Load Network Peers
-    - [ ] Smart Peer Cycling
-        - [x] Naive Peer Cycling
-    - [ ] Peer Comparison
 
 - [ ] Manager Plugin
 
@@ -54,4 +46,14 @@
     - [x] Create Account
     - [x] Retrieve Account
     - [x] List Delegates
+    
+- [x] Manager Pattern Migration
+    - [x] Account Manager
+    - [x] Block Explorer
+    - [x] Transaction Manager
+    
+- [x] Solution Redesign
+    - [x] Reduce Coupling
+    - [x] Reduce Method Overloads
+    - [x] Standardize Key Format to One Type
     

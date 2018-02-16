@@ -1,17 +1,23 @@
 package io.ark.core.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.ark.core.model.Fees;
 import io.ark.core.network.response.v1.Block;
+import io.ark.core.network.response.v1.Fee;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BlockExplorerResponse {
 
   private boolean success;
-  private Fees fees;
+  private Fee fees;
   private Block block;
   private List<Block> blocks;
   private String epoch;
