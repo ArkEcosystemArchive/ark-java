@@ -1,4 +1,4 @@
-package io.ark.core.responses;
+package io.ark.core.network.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.ark.core.network.response.v1.Peer;

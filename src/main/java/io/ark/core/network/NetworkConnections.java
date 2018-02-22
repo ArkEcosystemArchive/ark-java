@@ -1,10 +1,9 @@
 package io.ark.core.network;
 
 import io.ark.core.model.SeedPeer;
+import io.ark.core.network.request.GetRequest;
+import io.ark.core.network.response.PeerResponse;
 import io.ark.core.network.response.v1.Peer;
-import io.ark.core.requests.GetRequest;
-import io.ark.core.requests.PeerComparator;
-import io.ark.core.responses.PeerResponse;
 import io.ark.core.util.ResponseUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,13 +40,21 @@ public class NetworkConnections {
       seedPeers.add(new SeedPeer(address, config.getPort()));
     }
 
-    List<Peer> peerList = start(seedPeers);
-    this.peers = new PriorityQueue<Peer>(peerList.size(), new PeerComparator());
-    this.peers.addAll(peerList);
+    reset(seedPeers);
   }
   
   public Peer getPeer() {
     return peers.peek();
+  }
+  
+  public void nextPeer() {
+    peers.remove();
+  }
+  
+  private void reset(List<SeedPeer> seedPeers) {
+    List<Peer> peerList = start(seedPeers);
+    this.peers = new PriorityQueue<Peer>(peerList.size(), new PeerComparator());
+    this.peers.addAll(peerList);
   }
 
   private List<Peer> start(List<SeedPeer> seedPeers) {
@@ -70,6 +77,7 @@ public class NetworkConnections {
       if (!peerResponse.isSuccess()) {
         continue;
       } else {
+        executor.shutdown();
         return peerResponse.getPeers();
       }
     }

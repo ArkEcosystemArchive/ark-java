@@ -2,12 +2,11 @@ package io.ark.core.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bitcoinj.core.ECKey;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bitcoinj.core.ECKey;
 
 @Data
 @Builder
@@ -21,9 +20,7 @@ public class Account {
   private int unconfirmedSignature;
   private int secondSignature;
   private String secondPublicKey;
-  @JsonProperty("multisignatures")
   private List<String> multiSignatures;
-  @JsonProperty("u_multisignatures")
   private List<String> uMultiSignatures;
 
   private ECKey keyPair;

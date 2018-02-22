@@ -7,7 +7,7 @@
     - [x] Sign Transaction
     - [x] Second Sign Transaction
     - [ ] Multisignature
-    - [ ] Vendor Field (Smart Bridge)
+    - [x] Vendor Field (Smart Bridge)
     - [ ] Assets 
     
 - [ ] Peer Management
@@ -17,15 +17,6 @@
     - [x] Peer Comparison
 
 ## Planned Tasks
-
-- [ ] HTTP Request Upgrade
-    - [x] Robust GET requests
-    - [ ] Robust POST requests
-    - [x] Standardize Transfer Objects
-    - [x] Encapsulate Success Checking
-
-- [ ] Manager Plugin
-
 - [ ] Multisignature
     - [ ] TBA
     
@@ -56,4 +47,10 @@
     - [x] Reduce Coupling
     - [x] Reduce Method Overloads
     - [x] Standardize Key Format to One Type
+    
+- [x] HTTP Request Upgrade
+    - [x] Robust GET requests
+    - [x] Robust POST requests
+    - [x] Standardize Transfer Objects
+    - [x] Encapsulate Success Checking
     

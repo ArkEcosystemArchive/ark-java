@@ -1,7 +1,6 @@
 package io.ark.core.network.response.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.ark.core.network.response.NodeResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,7 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Block implements NodeResponse {
+public class Block {
 
   private String id;
 

@@ -1,14 +1,14 @@
-package io.ark.core.requests;
+package io.ark.core.manager;
 
 import io.ark.core.crypto.Crypto;
 import io.ark.core.model.Account;
 import io.ark.core.model.Asset;
 import io.ark.core.model.Transaction;
 import io.ark.core.network.NetworkConnections;
+import io.ark.core.network.response.BlockExplorerResponse;
+import io.ark.core.network.response.TransactionResponse;
 import io.ark.core.network.response.v1.Fee;
 import io.ark.core.requests.dto.TransactionTransport;
-import io.ark.core.responses.BlockExplorerResponse;
-import io.ark.core.responses.TransactionResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;

@@ -2,7 +2,6 @@ package io.ark.core.network.response.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.ark.core.network.response.NodeResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Transaction implements NodeResponse {
+public class Transaction {
 
   private String id;
 

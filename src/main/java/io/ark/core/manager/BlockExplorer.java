@@ -1,11 +1,11 @@
-package io.ark.core.requests;
+package io.ark.core.manager;
 
 import io.ark.core.model.NetworkStatus;
 import io.ark.core.network.NetworkConnections;
+import io.ark.core.network.response.BlockExplorerResponse;
 import io.ark.core.network.response.v1.Block;
 import io.ark.core.network.response.v1.Fee;
 import io.ark.core.requests.dto.BlockQueryParams;
-import io.ark.core.responses.BlockExplorerResponse;
 import java.util.List;
 
 public class BlockExplorer extends Manager {

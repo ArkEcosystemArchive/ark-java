@@ -13,19 +13,6 @@
       "explorer":"https://explorer.ark.io"
     }
   },
-  "bitcoin": {
-    "messagePrefix": "Bitcoin message:\n",
-    "bip32": {
-      "publicKey": 46090600,
-      "privateKey": 46089520
-    },
-    "pubKeyHash": 1,
-    "wif": 1,
-    "client": {
-      "token":"Bitcoin",
-      "symbol":"B"
-    }
-  },
   "testnet": {
     "messagePrefix": "TESTNET message:\n",
     "bip32": {

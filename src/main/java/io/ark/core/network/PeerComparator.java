@@ -1,4 +1,4 @@
-package io.ark.core.requests;
+package io.ark.core.network;
 
 import io.ark.core.network.response.v1.Peer;
 import java.util.Comparator;
