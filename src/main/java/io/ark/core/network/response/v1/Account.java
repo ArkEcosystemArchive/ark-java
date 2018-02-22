@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(of = {"address"})
 @EqualsAndHashCode(of = {"address"})
-@Getter
-@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Account {
 

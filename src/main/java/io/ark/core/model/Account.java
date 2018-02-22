@@ -1,5 +1,6 @@
 package io.ark.core.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,9 @@ public class Account {
   private int unconfirmedSignature;
   private int secondSignature;
   private String secondPublicKey;
+  @JsonProperty("multisignatures")
   private List<String> multiSignatures;
+  @JsonProperty("u_multisignatures")
   private List<String> uMultiSignatures;
 
   private ECKey keyPair;
