@@ -7,7 +7,15 @@ public class PeerComparator implements Comparator<Peer> {
 
   @Override
   public int compare(Peer one, Peer two) {
-    if (one.getDelay() < two.getDelay()) {
+    if (version(one) > version(two)) {
+      return -1;
+    } else if (version(one) < version(two)) {
+      return 1;
+    } else if (one.getHeight() > two.getHeight()) {
+      return -1;
+    } else if (one.getHeight() < two.getHeight()) {
+      return 1;
+    } else if (one.getDelay() < two.getDelay()) {
       return -1;
     } else if (one.getDelay() > two.getDelay()) {
       return 1;
@@ -15,4 +23,8 @@ public class PeerComparator implements Comparator<Peer> {
     return 0;
   }
 
+  private int version(Peer peer) {
+    return Integer.valueOf(peer.getVersion().replaceAll(".", ""));
+  }
+  
 }
