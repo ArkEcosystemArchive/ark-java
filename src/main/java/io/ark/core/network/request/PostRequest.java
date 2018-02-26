@@ -1,7 +1,7 @@
-package io.ark.core.requests;
+package io.ark.core.network.request;
 
-import io.ark.core.model.Peer;
-import io.ark.core.util.JsonUtils;
+import io.ark.core.network.response.v1.Peer;
+import io.ark.core.util.ResponseUtils;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -32,7 +32,7 @@ public class PostRequest extends Request implements Callable<String> {
 
   private void doPost() throws IOException {
     DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-    wr.writeBytes(JsonUtils.getObjectAsJson(payload));
+    wr.writeBytes(ResponseUtils.getObjectAsJson(payload));
     wr.flush();
     wr.close();
   }

@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE)
 @NoArgsConstructor
 public class Asset {
-
+  
 }

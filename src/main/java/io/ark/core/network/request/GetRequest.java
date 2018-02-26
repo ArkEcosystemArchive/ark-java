@@ -1,8 +1,8 @@
-package io.ark.core.requests;
+package io.ark.core.network.request;
 
+import io.ark.core.network.response.v1.Peer;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import io.ark.core.model.Peer;
 
 public class GetRequest extends Request implements Callable<String> {
 

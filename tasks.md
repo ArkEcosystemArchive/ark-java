@@ -7,33 +7,16 @@
     - [x] Sign Transaction
     - [x] Second Sign Transaction
     - [ ] Multisignature
-    - [ ] Vendor Field (Smart Bridge)
+    - [x] Vendor Field (Smart Bridge)
     - [ ] Assets 
-
-## Planned Tasks
-
-- [ ] Manager Pattern Migration
-    - [ ] Account Manager
-
-- [ ] HTTP Request Upgrade
-    - [x] Robust GET requests
-    - [ ] Robust POST requests
-    - [x] Standardize Transfer Objects
-    - [x] Encapsulate Success Checking
-
-- [ ] Solution Redesign
-    - [ ] Reduce Coupling
-    - [ ] Reduce Method Overloads
-    - [ ] Standardize Key Format to One Type
-
+    
 - [ ] Peer Management
     - [x] Load Network Peers
     - [ ] Smart Peer Cycling
         - [x] Naive Peer Cycling
-    - [ ] Peer Comparison
+    - [x] Peer Comparison
 
-- [ ] Manager Plugin
-
+## Planned Tasks
 - [ ] Multisignature
     - [ ] TBA
     
@@ -54,4 +37,20 @@
     - [x] Create Account
     - [x] Retrieve Account
     - [x] List Delegates
+    
+- [x] Manager Pattern Migration
+    - [x] Account Manager
+    - [x] Block Explorer
+    - [x] Transaction Manager
+    
+- [x] Solution Redesign
+    - [x] Reduce Coupling
+    - [x] Reduce Method Overloads
+    - [x] Standardize Key Format to One Type
+    
+- [x] HTTP Request Upgrade
+    - [x] Robust GET requests
+    - [x] Robust POST requests
+    - [x] Standardize Transfer Objects
+    - [x] Encapsulate Success Checking
     

@@ -3,16 +3,14 @@ package io.ark.core.model;
 import java.text.MessageFormat;
 import lombok.Getter;
 
-public class Peer {
+public class SeedPeer {
 
   @Getter
   private String address;
   @Getter
   private int port;
-  private long lastSeen;
-  private long lastResponseTime;
 
-  public Peer(String address, int port) {
+  public SeedPeer(String address, int port) {
     this.address = address;
     this.port = port;
   }

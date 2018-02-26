@@ -1,5 +1,6 @@
-package io.ark.core.requests;
+package io.ark.core.network.request;
 
+import io.ark.core.network.response.v1.Peer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Map;
-import io.ark.core.model.Peer;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Request {
 
   private static final String PROTOCOL = "http://";
@@ -19,6 +21,7 @@ public class Request {
   public Request(Peer peer, Map<String, String> headers, String endpoint) {
     try {
       String connectionEndpoint = getEndpoint(peer, endpoint);
+      log.debug(MessageFormat.format("Opening connection {0}", connectionEndpoint));
       conn = (HttpURLConnection) new URL(connectionEndpoint).openConnection();
       for (String header : headers.keySet()) {
         conn.addRequestProperty(header, headers.get(header));
@@ -39,6 +42,7 @@ public class Request {
         throw new RuntimeException("Could not parse response", ex);
       }
     }
+    log.debug(MessageFormat.format("Response: {0}", response));
     return response;
   }
 
@@ -58,6 +62,6 @@ public class Request {
   }
 
   private String getEndpoint(Peer currentPeer, String endpoint) {
-    return MessageFormat.format("{0}{1}{2}", PROTOCOL, currentPeer.get(), endpoint);
+    return MessageFormat.format("{0}{1}:{2}{3}", PROTOCOL, currentPeer.getIp(), Integer.toString(currentPeer.getPort()), endpoint);
   }
 }

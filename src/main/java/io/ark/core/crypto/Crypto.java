@@ -37,7 +37,7 @@ public class Crypto {
     return passphrase;
   }
 
-  public static void sign(final Transaction tx, final ECKey keyPair) {
+  public static void sign(Transaction tx, ECKey keyPair) {
     Sha256Hash data = getHash(tx, true, true);
     ECDSASignature signature = keyPair.sign(data);
     byte[] derEncodedSignature = signature.encodeToDER();
@@ -46,7 +46,7 @@ public class Crypto {
     tx.setSignature(hexSignature);
   }
 
-  public static void secondSign(final Transaction tx, final ECKey keyPair) {
+  public static void secondSign(Transaction tx, ECKey keyPair) {
     Sha256Hash data = getHash(tx, false, true);
     ECDSASignature signature = keyPair.sign(data);
     byte[] derEncodedSignature = signature.encodeToDER();
@@ -56,18 +56,25 @@ public class Crypto {
   }
 
   public static void setId(final Transaction tx) {
-    Sha256Hash data = getHash(tx, false, true);
+    Sha256Hash data;
+    if (tx.getSignSignatureBytes() != null) {
+      data = getHash(tx, false, false);
+    } else {
+      data = getHash(tx, false, true);
+    }
     tx.setId(StringUtils.toHexString(data.getBytes()));
   }
 
-  public static byte[] getBytes(final Transaction tx, final boolean skipSignature,
-      final boolean skipSecondSignature) {
+  public static byte[] getBytes(Transaction tx, boolean skipSignature, boolean skipSecondSignature) {
     int assetSize = 0;
     byte[] assetBytes;
 
     switch (tx.getType()) {
       case 0:
         if (!skipSignature) {
+          assetSize += tx.getSignatureBytes().length;
+        }
+        if (!skipSecondSignature) {
           assetSize += tx.getSignatureBytes().length;
         }
         break;
@@ -91,23 +98,32 @@ public class Crypto {
     byte[] senderPublicKey = tx.getKeyPair().getPubKey();
     bb.put(senderPublicKey);
 
-    // TODO: checks
     byte[] recipientId = Base58Check.base58ToRawBytes(tx.getRecipientId());
     byte[] copiedId = new byte[21];
     System.arraycopy(recipientId, 0, copiedId, 0, 21);
     bb.put(copiedId);
 
-    // TODO: vendor field?
-    for (int i = 0; i < 64; i++) {
-      bb.put((byte) 0);
+    if (tx.getVendorField() != null) {
+      byte[] vendorBytes = new byte[64];
+      byte[] vendorField = tx.getVendorField().getBytes();
+      System.arraycopy(vendorField, 0, vendorBytes, 0, Math.min(vendorField.length, 64));
+      for(int j = 0; j < 64; j++) {
+        bb.put(vendorBytes[j]);
+      }
+    } else {
+      for (int i = 0; i < 64; i++) {
+        bb.put((byte) 0);
+      }
     }
-
+    
     bb.putLong(tx.getAmount());
     bb.putLong(tx.getFee());
 
-    // TODO: assets / signatures
-    if (!skipSignature && tx.getSignature() != null) {
+    if (!skipSignature) {
       bb.put(tx.getSignatureBytes());
+    }
+    if (!skipSecondSignature) {
+      bb.put(tx.getSignSignatureBytes());
     }
 
     bb.flip();
@@ -118,12 +134,12 @@ public class Crypto {
     return buffer;
   }
 
-  public static Sha256Hash getHash(final Transaction tx, final boolean skipSignature, final boolean skipSecondSignature) {
+  public static Sha256Hash getHash(Transaction tx, boolean skipSignature, boolean skipSecondSignature) {
     byte[] txBytes = getBytes(tx, skipSignature, skipSecondSignature);
     return Sha256Hash.of(txBytes);
   }
 
-  public static ECKey getKeys(final String secret) {
+  public static ECKey getKeys(String secret) {
     MessageDigest digest;
     BigInteger d;
     try {
@@ -139,16 +155,9 @@ public class Crypto {
     return ECKey.fromPrivate(d);
   }
 
-  public static String getAddress(final BigInteger publicKey, final byte version) {
-    return getAddress(publicKey.toByteArray(), version);
-  }
-
-  public static String getAddress(final String publicKey, final byte version) {
-    return getAddress(new BigInteger(publicKey, 16).toByteArray(), version);
-  }
-
-  public static String getAddress(final byte[] publicKey, final byte version) {
+  public static String getAddress(ECKey keyPair, byte version) {
     RIPEMD160Digest digest = new RIPEMD160Digest();
+    byte[] publicKey = keyPair.getPubKey();
     digest.update(publicKey, 0, publicKey.length);
     byte[] out = new byte[20];
     digest.doFinal(out, 0);

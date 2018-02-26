@@ -1,32 +1,53 @@
 package io.ark.core.network;
 
-import io.ark.core.requests.AccountManager;
-import io.ark.core.requests.BlockExplorer;
-import io.ark.core.requests.TransactionManager;
+import io.ark.core.config.ConfigLoader;
+import io.ark.core.manager.AccountManager;
+import io.ark.core.manager.BlockExplorer;
+import io.ark.core.manager.Manager;
+import io.ark.core.manager.TransactionManager;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 
 public class ArkNet {
 
-  private Network network;
-  private NetworkInfo networkInfo;
-  private NetworkConfig networkConfig;
+  protected NetworkConfig networkConfig;
+  protected NetworkInfo networkInfo;
+  protected NetworkConnections connections;
 
   @Getter
-  private BlockExplorer blockExplorer;
-
+  protected BlockExplorer blockExplorer;
   @Getter
-  private AccountManager accountManager;
-
+  protected AccountManager accountManager;
   @Getter
-  private TransactionManager transactionManager;
+  protected TransactionManager transactionManager;
+  
+  private List<Manager> managers;
 
-  public ArkNet() {
-    this.network = new DevNet();
-    this.networkInfo = network.getNetworkInfo();
-    this.networkConfig = network.getNetworkConfig();
-    this.accountManager = new AccountManager(networkConfig, networkInfo);
-    this.blockExplorer = new BlockExplorer(networkConfig, networkInfo);
-    this.transactionManager = new TransactionManager(networkConfig, networkInfo);
+  public ArkNet(ArkNetwork network) {
+    try {
+      networkConfig = ConfigLoader.loadNetworkConfig(network);
+      networkInfo = ConfigLoader.loadNetworkInformation(network);
+      connections = new NetworkConnections(networkConfig);
+    } catch (Exception e) {
+      throw new RuntimeException(MessageFormat.format("Failed to instantiate ARK_{0}_NET", network.name()), e);
+    }
+
+    accountManager = new AccountManager(connections, networkInfo);
+    blockExplorer = new BlockExplorer(connections);
+    transactionManager = new TransactionManager(connections);
+    
+    managers = new ArrayList<>();
+    managers.add(blockExplorer);
+    managers.add(accountManager);
+    managers.add(transactionManager);
+  }
+  
+  public void shutdown() {
+    for (Manager manager : managers) {
+      manager.shutdown();
+    }
   }
 
 }

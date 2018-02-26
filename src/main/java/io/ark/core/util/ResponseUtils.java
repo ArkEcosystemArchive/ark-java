@@ -7,11 +7,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
-public final class JsonUtils {
+public final class ResponseUtils {
 
+  private static final long TIMEOUT_LENGTH = 5;
+  private static final TimeUnit TIMEOUT_UNITS = TimeUnit.SECONDS;
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
   public static JSONObject getResourceJSON(String resource) throws Exception {
@@ -48,5 +54,10 @@ public final class JsonUtils {
     }
   }
 
-  private JsonUtils() {}
+  public static <T> T getResponse(Future<String> response, Class<T> clazz) throws InterruptedException, ExecutionException, TimeoutException {
+    String res = response.get(TIMEOUT_LENGTH, TIMEOUT_UNITS);
+    return getObjectFromJson(res, clazz);
+  }
+
+  private ResponseUtils() {}
 }

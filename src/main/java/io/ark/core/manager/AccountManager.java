@@ -1,11 +1,11 @@
-package io.ark.core.requests;
+package io.ark.core.manager;
 
 import io.ark.core.crypto.Crypto;
 import io.ark.core.model.Account;
 import io.ark.core.model.Delegate;
-import io.ark.core.network.NetworkConfig;
+import io.ark.core.network.NetworkConnections;
 import io.ark.core.network.NetworkInfo;
-import io.ark.core.responses.AccountResponse;
+import io.ark.core.network.response.AccountResponse;
 import java.util.Arrays;
 import java.util.List;
 import org.bitcoinj.core.ECKey;
@@ -20,8 +20,11 @@ public class AccountManager extends Manager {
   private static final String getDelegates = "/api/accounts/delegates?address=";
   private static final String getAccount = "/api/accounts?address=";
 
-  public AccountManager(NetworkConfig config, NetworkInfo info) {
-    super(config, info);
+  private NetworkInfo info;
+  
+  public AccountManager(NetworkConnections connections, NetworkInfo info) {
+    super(connections);
+    this.info = info;
   }
 
   public String createPassphrase() {
@@ -86,7 +89,7 @@ public class AccountManager extends Manager {
     }
 
     ECKey keyPair = Crypto.getKeys(secret);
-    String address = Crypto.getAddress(keyPair.getPubKey(), info.getPubKeyHash());
+    String address = Crypto.getAddress(keyPair, info.getPubKeyHash());
 
     Account account = _getAccount(address);
 
@@ -108,7 +111,11 @@ public class AccountManager extends Manager {
   }
 
   private AccountResponse doRequest(String endpoint) {
-    return http.getFuture(endpoint, AccountResponse.class);
+    try {
+      return http.get(endpoint, AccountResponse.class);
+    } catch (Exception e) {
+      return AccountResponse.builder().success(false).build();
+    }
   }
 
 }

@@ -2,7 +2,6 @@ package io.ark.core.network.response.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.ark.core.network.response.NodeResponse;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Delegate implements NodeResponse {
+public class Delegate {
 
   private String username;
 

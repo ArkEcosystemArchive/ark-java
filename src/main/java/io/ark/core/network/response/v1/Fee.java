@@ -2,12 +2,13 @@ package io.ark.core.network.response.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.ark.core.network.response.NodeResponse;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Fee implements NodeResponse {
+public class Fee {
 
   private long send;
 

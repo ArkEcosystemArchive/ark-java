@@ -1,7 +1,6 @@
 package io.ark.core.network.response.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.ark.core.network.response.NodeResponse;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,14 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(of = {"address"})
 @EqualsAndHashCode(of = {"address"})
-@Getter
-@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Account implements NodeResponse {
+public class Account {
 
   private String address;
 
