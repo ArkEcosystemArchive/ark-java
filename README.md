@@ -59,6 +59,10 @@ println mainnet << transaction
 Run the example Groovy code by doing:
 `groovy example/Example.groovy`
 
+## Security
+
+If you discover a security vulnerability within this library, please send an e-mail to security@ark.io. All security vulnerabilities will be promptly addressed.
+
 # License
 
 The MIT License (MIT)
